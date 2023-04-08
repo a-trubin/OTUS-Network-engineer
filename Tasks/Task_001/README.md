@@ -8,7 +8,8 @@
 - Проверка работы маршрутизации между VLAN
 
 ## Топология
-![image](https://user-images.githubusercontent.com/130133180/230718537-c25a5608-6872-47cd-af5c-7c65113e5a22.png)
+![image](https://user-images.githubusercontent.com/130133180/230719573-ba31447c-0bbb-4af1-b03f-997be0e010bc.png)
+
 
 ## Таблица адресов
 
