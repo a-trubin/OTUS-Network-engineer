@@ -141,4 +141,39 @@ b.	Выполните команду show vlan brief и убедитесь, чт
 ![image](https://user-images.githubusercontent.com/130133180/230792953-988f51b6-866f-487e-89dd-bf61dbb7e4b1.png)
 ![image](https://user-images.githubusercontent.com/130133180/230792966-296329da-3a9d-472d-8323-94139364d928.png)
 
+## Часть 3: Настройка магистрали 802.1Q между коммутаторами.  
 
+### Шаг 1: Ручная настройка магистрального интерфейса F0/1.
+
+a.	Измените режим switchport mode на интерфейсе e0/1 на принудительное транкирование. Обязательно сделайте это на обоих коммутаторах.
+```
+S1(config)#interface e0/1
+S1(config-if)#switchport trunk encapsulation dot1q
+S1(config-if)#switchport mode trunk  
+
+
+S2(config)#interface e0/1
+S2(config-if)#switchport trunk encapsulation dot1q
+S2(config-if)#switchport mode trunk
+```
+b.	Установите native VLAN 8 на обоих коммутаторах.  
+```
+S1(config-if)#switchport trunk native vlan 8
+
+S2(config-if)#switchport trunk native vlan 8
+```
+c.	Разрешить VLAN 3, 4 и 8 в trunk.  
+```
+S1(config-if)#switchport trunk allowed vlan 3,4,8
+S2(config-if)#switchport trunk allowed vlan 3,4,8
+```
+d.	Выполните команду show interfaces trunk, чтобы проверить порты транкинга, родную VLAN и разрешенные VLAN через транк.  
+![image](https://user-images.githubusercontent.com/130133180/230793744-855c59bf-4065-4805-b99c-4820520b2e7e.png)
+![image](https://user-images.githubusercontent.com/130133180/230793752-dcdec667-9a20-47e5-8b80-1252066b63c8.png)
+
+### Шаг 2: Ручная настройка магистрального интерфейса S1 F0/5
+a.	Настройте F0/5 на S1 с теми же параметрами магистрали, что и F0/1. Это магистраль к маршрутизатору.  
+b.	Сохраните текущую конфигурацию в файл начальной конфигурации на S1 и S2.  
+c.	Вызовите команду show interfaces trunk для проверки транкинга.  
+Вопрос:
+Почему F0/5 не отображается в списке транков?
