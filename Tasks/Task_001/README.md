@@ -216,4 +216,22 @@ R1(config-subif)#encapsulation dot1Q 8 native
 c.	Используйте команду show ip interface brief для проверки работоспособности подынтерфейсов.  
 ![image](https://user-images.githubusercontent.com/130133180/230794706-f817cd46-65b5-4293-9798-75c3f4510172.png)
 
+## Часть 5: Проверка работы маршрутизации  
 
+### Шаг 1: Выполните следующие тесты с PC-A. Все они должны быть успешными.
+
+a.	Ping с PC-A на его шлюз по умолчанию.  
+![image](https://user-images.githubusercontent.com/130133180/230794951-428c886a-f905-4556-bf6b-123cc8ce4c50.png)  
+b.	Ping с PC-A на PC-B  
+![image](https://user-images.githubusercontent.com/130133180/230794968-872177f6-05d6-444d-b466-04e6eb571e80.png)  
+c.	Ping с PC-A на S2  
+![image](https://user-images.githubusercontent.com/130133180/230794996-bc010680-de82-4019-a96b-1c7a9de0bde9.png)  
+### Шаг 2: Выполните следующий тест с PC-B.  
+
+Из командной строки на PC-B выполните команду tracert на адрес PC-A.  
+![image](https://user-images.githubusercontent.com/130133180/230795213-1e5ceb36-bd0d-404c-8205-426592f6aaa5.png)  
+
+Вопрос:
+Какие промежуточные IP-адреса показаны в результатах?
+
+192.168.4.1 - R1
