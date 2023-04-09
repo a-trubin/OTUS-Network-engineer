@@ -86,3 +86,59 @@ k.	Скопируйте рабочую конфигурацию в началь�
 PC-A> ip 192.168.3.3/24 192.168.3.1
 PC-B> ip 192.168.4.3/24 192.168.4.1
 ```
+## Часть 2: Создание виртуальных локальных сетей и назначение портов коммутатора
+
+### Шаг 1: Создайте сети VLAN на обоих коммутаторах.
+a.	Создайте и назовите необходимые VLAN на каждом коммутаторе из таблицы выше. 
+![image](https://user-images.githubusercontent.com/130133180/230791648-781ffd10-7d4e-4699-b795-e349d27d909b.png)
+![image](https://user-images.githubusercontent.com/130133180/230791659-2f083a5e-609a-4e46-a0f3-51951e9e601f.png)
+b.	Настройте интерфейс управления и шлюз по умолчанию на каждом коммутаторе, используя информацию об IP-адресах в таблице адресации.   
+```
+S1(config)#interface vlan 3
+S1(config-if)#ip address 192.168.3.11 255.255.255.0
+S1(config-if)#no shutdown
+S1(config-if)#exit
+S1(config)#ip default-gateway 192.168.3.1  
+
+S2(config)#interface vlan 3
+S2(config-if)#ip address 192.168.3.12 255.255.255.0
+S2(config-if)#no shutdown
+S2(config-if)#exit
+S2(config)#ip default-gateway 192.168.3.1
+```
+c.	Назначьте все неиспользуемые порты на обоих коммутаторах в VLAN ParkingLot, настройте их на статический режим доступа и административно деактивируйте их.  
+```
+S1(config)#interface e0/3
+S1(config-if)#switchport mode access
+S1(config-if)#switchport access vlan 7
+S1(config-if)#shutdown  
+
+S2(config)#interface e0/0
+S2(config-if)#switchport mode access
+S2(config-if)#switchport access vlan 7
+S2(config-if)#shutdown
+
+
+S2(config-if)#interface e0/3
+S2(config-if)#switchport mode access
+S2(config-if)#switchport access vlan 7
+S2(config-if)#shutdown
+```
+### Шаг 2: Назначьте сети VLAN правильным интерфейсам коммутатора.  
+a.	Назначьте используемые порты соответствующим VLAN (указанным в таблице VLAN выше) и настройте их на статический режим доступа. Обязательно сделайте это на обоих коммутаторах  
+```
+S1(config)#interface e0/2
+S1(config-if)#switch
+S1(config-if)#switchport mode access
+S1(config-if)#switchport access vlan 3   
+
+
+S2(config)#interface e0/2
+S2(config-if)#switchport mode access
+S2(config-if)#switchport access vlan 4
+```
+b.	Выполните команду show vlan brief и убедитесь, что сети VLAN назначены правильным интерфейсам.  
+![image](https://user-images.githubusercontent.com/130133180/230792953-988f51b6-866f-487e-89dd-bf61dbb7e4b1.png)
+![image](https://user-images.githubusercontent.com/130133180/230792966-296329da-3a9d-472d-8323-94139364d928.png)
+
+
