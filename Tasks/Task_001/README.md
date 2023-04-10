@@ -98,7 +98,8 @@ S1(config-vlan)#vlan 4
 S1(config-vlan)#name Operations
 S1(config-vlan)#vlan 7
 S1(config-vlan)#name ParkingLot
-S
+S1(config-vlan)#vlan 8
+S1(config-vlan)#name Native
 
 S2(config)#vlan 3
 S2(config-vlan)#name Management
@@ -106,10 +107,11 @@ S2(config-vlan)#vlan 4
 S2(config-vlan)#name Operations
 S2(config-vlan)#vlan 7
 S2(config-vlan)#name ParkingLot
-
+S2(config-vlan)#vlan 8
+S2(config-vlan)#name Native
 ```
-![image](https://user-images.githubusercontent.com/130133180/230791648-781ffd10-7d4e-4699-b795-e349d27d909b.png)
-![image](https://user-images.githubusercontent.com/130133180/230791659-2f083a5e-609a-4e46-a0f3-51951e9e601f.png)  
+![image](https://user-images.githubusercontent.com/130133180/230832741-775ce6df-e2b7-42d2-97b9-05e391e70bae.png)
+![image](https://user-images.githubusercontent.com/130133180/230832761-d62dd6ee-7145-4a9b-a1ee-95f3a04791d9.png)
 
 b.	Настройте интерфейс управления и шлюз по умолчанию на каждом коммутаторе, используя информацию об IP-адресах в таблице адресации.   
 ```
