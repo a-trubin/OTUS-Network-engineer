@@ -98,8 +98,7 @@ S1(config-vlan)#vlan 4
 S1(config-vlan)#name Operations
 S1(config-vlan)#vlan 7
 S1(config-vlan)#name ParkingLot
-S1(config-vlan)#vlan 8
-S1(config-vlan)#name Native
+S
 
 S2(config)#vlan 3
 S2(config-vlan)#name Management
@@ -107,8 +106,7 @@ S2(config-vlan)#vlan 4
 S2(config-vlan)#name Operations
 S2(config-vlan)#vlan 7
 S2(config-vlan)#name ParkingLot
-S1(config-vlan)#vlan 8
-S1(config-vlan)#name Native
+
 ```
 ![image](https://user-images.githubusercontent.com/130133180/230791648-781ffd10-7d4e-4699-b795-e349d27d909b.png)
 ![image](https://user-images.githubusercontent.com/130133180/230791659-2f083a5e-609a-4e46-a0f3-51951e9e601f.png)  
