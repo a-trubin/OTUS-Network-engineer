@@ -107,8 +107,132 @@ S3#copy running-config startup-config
 Проверьте способность компьютеров обмениваться эхо-запросами.
 Успешно ли выполняется эхо-запрос от коммутатора S1 на коммутатор S2?	
 ```
+S1#ping 192.168.1.2
+Type escape sequence to abort.
+Sending 5, 100-byte ICMP Echos to 192.168.1.2, timeout is 2 seconds:
+.!!!!
+Success rate is 80 percent (4/5), round-trip min/avg/max = 1/1/2 ms
 ```
 Успешно ли выполняется эхо-запрос от коммутатора S1 на коммутатор S3?
 ```
+S1#ping 192.168.1.3
+Type escape sequence to abort.
+Sending 5, 100-byte ICMP Echos to 192.168.1.3, timeout is 2 seconds:
+.!!!!
+Success rate is 80 percent (4/5), round-trip min/avg/max = 1/1/1 ms
 ```
 Успешно ли выполняется эхо-запрос от коммутатора S2 на коммутатор S3?	
+```
+S2#ping 192.168.1.3
+Type escape sequence to abort.
+Sending 5, 100-byte ICMP Echos to 192.168.1.3, timeout is 2 seconds:
+.!!!!
+Success rate is 80 percent (4/5), round-trip min/avg/max = 1/1/1 ms
+```
+## Часть 2:	Определение корневого моста
+
+### Шаг 1:	Отключите все порты на коммутаторах.
+```
+S1(config)#int range e0/0-3
+S1(config-if-range)#shutdown
+
+S2(config)#int range e0/0-3
+S2(config-if-range)#shutdown
+
+S3(config)#int range e0/0-3
+S3(config-if-range)#shutdown
+```
+### Шаг 2:	Настройте подключенные порты в качестве транковых.
+```
+S1(config)#int range e0/0-3
+S1(config-if-range)#switchport trunk encapsulation dot1q
+S1(config-if-range)#switchport mode trunk
+
+S2(config)#int range e0/0-3
+S2(config-if-range)#switchport trunk encapsulation dot1q
+S2(config-if-range)#switchport mode trunk
+
+S3(config)#int range e0/0-3
+S3(config-if-range)#switchport trunk encapsulation dot1q
+S3(config-if-range)#switchport mode trunk
+```
+###Шаг 3:	Включите порты F0/2 и F0/4 на всех коммутаторах.
+*В данном случае e0/3 и e0/1 на S1, e0/3 и e0/1 на S3, e0/3 и e0/1 на S2
+```
+S1(config)#int range e0/3, e0/1
+S1(config-if-range)#no shutdown
+
+S2(config)#int range e0/3, e0/1
+S2(config-if-range)#no shutdown
+
+S3(config)#int range e0/3, e0/1
+S3(config-if-range)#no shutdown
+```
+### Шаг 4:	Отобразите данные протокола spanning-tree.  
+S1: 
+```
+S1#show spanning-tree
+
+VLAN0001
+  Spanning tree enabled protocol ieee
+  Root ID    Priority    32769
+             Address     aabb.cc00.0100
+             This bridge is the root
+             Hello Time   2 sec  Max Age 20 sec  Forward Delay 15 sec
+
+  Bridge ID  Priority    32769  (priority 32768 sys-id-ext 1)
+             Address     aabb.cc00.0100
+             Hello Time   2 sec  Max Age 20 sec  Forward Delay 15 sec
+             Aging Time  300 sec
+
+Interface           Role Sts Cost      Prio.Nbr Type
+------------------- ---- --- --------- -------- --------------------------------
+Et0/1               Desg FWD 100       128.2    Shr
+Et0/3               Desg FWD 100       128.4    Shr
+```
+S2:  
+```
+
+S2#show spanning-tree
+
+VLAN0001
+  Spanning tree enabled protocol ieee
+  Root ID    Priority    32769
+             Address     aabb.cc00.0100
+             Cost        100
+             Port        2 (Ethernet0/1)
+             Hello Time   2 sec  Max Age 20 sec  Forward Delay 15 sec
+
+  Bridge ID  Priority    32769  (priority 32768 sys-id-ext 1)
+             Address     aabb.cc00.0200
+             Hello Time   2 sec  Max Age 20 sec  Forward Delay 15 sec
+             Aging Time  300 sec
+
+Interface           Role Sts Cost      Prio.Nbr Type
+------------------- ---- --- --------- -------- --------------------------------
+Et0/1               Root FWD 100       128.2    Shr
+Et0/3               Desg FWD 100       128.4    Shr
+```
+S3:
+```
+
+S3#show spanning-tree
+
+VLAN0001
+  Spanning tree enabled protocol ieee
+  Root ID    Priority    32769
+             Address     aabb.cc00.0100
+             Cost        100
+             Port        4 (Ethernet0/3)
+             Hello Time   2 sec  Max Age 20 sec  Forward Delay 15 sec
+
+  Bridge ID  Priority    32769  (priority 32768 sys-id-ext 1)
+             Address     aabb.cc00.0300
+             Hello Time   2 sec  Max Age 20 sec  Forward Delay 15 sec
+             Aging Time  300 sec
+
+Interface           Role Sts Cost      Prio.Nbr Type
+------------------- ---- --- --------- -------- --------------------------------
+Et0/1               Altn BLK 100       128.2    Shr
+Et0/3               Root FWD 100       128.4    Shr
+```
