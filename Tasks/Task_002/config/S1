@@ -1,0 +1,98 @@
+  
+S1#show running-config
+Building configuration...
+
+Current configuration : 1202 bytes
+!
+! Last configuration change at 19:20:44 UTC Sun Apr 16 2023
+!
+version 15.1
+service timestamps debug datetime msec
+service timestamps log datetime msec
+no service password-encryption
+service compress-config
+!
+hostname S1
+!
+boot-start-marker
+boot-end-marker
+!
+!
+enable secret 4 06YFDUHH61wAE/kLkDq9BGho1QM5EnRtoyr8cHAUg.2
+!
+no aaa new-model
+!
+ip cef
+!
+!
+no ip domain-lookup
+no ipv6 cef
+ipv6 multicast rpf use-bgp
+!
+!
+!
+!
+!
+!
+!
+spanning-tree mode pvst
+spanning-tree extend system-id
+!
+!
+!
+!
+vlan internal allocation policy ascending
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+interface Ethernet0/0
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+ duplex auto
+!
+interface Ethernet0/1
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+ duplex auto
+!
+interface Ethernet0/2
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+ duplex auto
+!
+interface Ethernet0/3
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+ duplex auto
+!
+interface Vlan1
+ ip address 192.168.1.1 255.255.255.0
+!
+!
+no ip http server
+!
+!
+!
+!
+!
+control-plane
+!
+banner motd ^CUnauthorized access is denied^C
+!
+line con 0
+ password cisco
+ logging synchronous
+ login
+line aux 0
+line vty 0 4
+ password cisco
+ login
+!
+end
