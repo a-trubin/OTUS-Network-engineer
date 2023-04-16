@@ -265,4 +265,87 @@ Et0/3               Root FWD 100       128.4    Shr
 Почему протокол spanning-tree выбрал этот порт в качестве невыделенного (заблокированного) порта?    
 > COST одинаковые, BID S2 < BID S3. Таким образом на S2 выбран designated порт, а на S3 alternated.
 
+## Часть 3:	Наблюдение за процессом выбора протоколом STP порта, исходя из стоимости портов
 
+### Шаг 1:	Определите коммутатор с заблокированным портом.
+
+![image](https://user-images.githubusercontent.com/130133180/232335285-eb2ea0e7-6dcd-4ac8-be20-36698734c942.png)
+
+### Шаг 2:	Измените стоимость порта.
+
+```
+S3(config)#int e0/3
+S3(config-if)#spanning-tree cost 18
+```
+
+### Шаг 3:	Просмотрите изменения протокола spanning-tree  
+
+```
+S3#show spanning-tree
+
+VLAN0001
+  Spanning tree enabled protocol ieee
+  Root ID    Priority    32769
+             Address     aabb.cc00.0100
+             Cost        18
+             Port        4 (Ethernet0/3)
+             Hello Time   2 sec  Max Age 20 sec  Forward Delay 15 sec
+
+  Bridge ID  Priority    32769  (priority 32768 sys-id-ext 1)
+             Address     aabb.cc00.0300
+             Hello Time   2 sec  Max Age 20 sec  Forward Delay 15 sec
+             Aging Time  15  sec
+
+Interface           Role Sts Cost      Prio.Nbr Type
+------------------- ---- --- --------- -------- --------------------------------
+Et0/1               Desg FWD 100       128.2    Shr
+Et0/3               Root FWD 18        128.4    Shr
+
+
+S2#show spanning-tree
+
+VLAN0001
+  Spanning tree enabled protocol ieee
+  Root ID    Priority    32769
+             Address     aabb.cc00.0100
+             Cost        100
+             Port        2 (Ethernet0/1)
+             Hello Time   2 sec  Max Age 20 sec  Forward Delay 15 sec
+
+  Bridge ID  Priority    32769  (priority 32768 sys-id-ext 1)
+             Address     aabb.cc00.0200
+             Hello Time   2 sec  Max Age 20 sec  Forward Delay 15 sec
+             Aging Time  15  sec
+
+Interface           Role Sts Cost      Prio.Nbr Type
+------------------- ---- --- --------- -------- --------------------------------
+Et0/1               Root FWD 100       128.2    Shr
+Et0/3               Altn BLK 100       128.4    Shr
+```
+Почему протокол spanning-tree заменяет ранее заблокированный порт на назначенный порт и блокирует порт, который был назначенным портом на другом коммутаторе?  
+> Из-за того, что порт с более низкой стоимостью приоритетнее.  
+
+### Шаг 4:	Удалите изменения стоимости порта.
+
+```
+S3(config)#int e0/3
+S3(config-if)#no spann
+S3(config-if)#no spanning-tree cost 18
+```
+Порты вернулись в исходное состояние.
+
+```
+S2#show spanning-tree
+
+Interface           Role Sts Cost      Prio.Nbr Type
+------------------- ---- --- --------- -------- --------------------------------
+Et0/1               Root FWD 100       128.2    Shr
+Et0/3               Desg FWD 100       128.4    Shr
+
+S3#show spanning-tree
+
+Interface           Role Sts Cost      Prio.Nbr Type
+------------------- ---- --- --------- -------- --------------------------------
+Et0/1               Altn BLK 100       128.2    Shr
+Et0/3               Root FWD 100       128.4    Shr
+```
