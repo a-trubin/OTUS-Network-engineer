@@ -238,8 +238,7 @@ Et0/3               Root FWD 100       128.4    Shr
 ```
 В схему ниже запишите роль и состояние (Sts) активных портов на каждом коммутаторе в топологии.  
 
-![image](https://user-images.githubusercontent.com/130133180/232246272-50d1855b-6211-4293-b0c7-aeb09a9c0ad0.png)
-
+![image](https://user-images.githubusercontent.com/130133180/233453088-b8b6042b-3e02-480e-8820-790c6f51fd15.png)
 
 С учетом выходных данных, поступающих с коммутаторов, ответьте на следующие вопросы.  
 
@@ -268,7 +267,7 @@ Et0/3               Root FWD 100       128.4    Shr
 
 ### Шаг 1:	Определите коммутатор с заблокированным портом.
 
-![image](https://user-images.githubusercontent.com/130133180/233453088-b8b6042b-3e02-480e-8820-790c6f51fd15.png)
+![image](https://user-images.githubusercontent.com/130133180/232335285-eb2ea0e7-6dcd-4ac8-be20-36698734c942.png)
 
 ### Шаг 2:	Измените стоимость порта.
 
