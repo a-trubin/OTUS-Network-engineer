@@ -8,7 +8,7 @@
 
 ## Топология
 
-![image](https://user-images.githubusercontent.com/130133180/233453088-b8b6042b-3e02-480e-8820-790c6f51fd15.png)
+![image](https://user-images.githubusercontent.com/130133180/233454427-673dcb5f-2e29-4f9f-854b-fee2a5972220.png)
 
 ## Таблица адресации
 
@@ -268,7 +268,7 @@ Et0/3               Root FWD 100       128.4    Shr
 
 ### Шаг 1:	Определите коммутатор с заблокированным портом.
 
-![image](https://user-images.githubusercontent.com/130133180/232335285-eb2ea0e7-6dcd-4ac8-be20-36698734c942.png)
+![image](https://user-images.githubusercontent.com/130133180/233453088-b8b6042b-3e02-480e-8820-790c6f51fd15.png)
 
 ### Шаг 2:	Измените стоимость порта.
 
