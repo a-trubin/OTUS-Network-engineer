@@ -256,3 +256,72 @@ S2(config)#int range e0/2-3
 S2(config-if-range)#switchport mode access
 S2(config-if-range)#shutdown
 ```
+
+### Шаг 8. Назначьте сети VLAN соответствующим интерфейсам коммутатора.  
+a. Назначьте используемые порты соответствующей VLAN (указанной в таблице VLAN выше) и
+настройте их для режима статического доступа.  
+```
+S1(config)#int e0/0
+S1(config-if)#switchport mode access
+S1(config-if)#switchport access vlan 100
+```
+b. Убедитесь, что VLAN назначены на правильные интерфейсы.  
+```
+S1(config)#do show vlan brief
+
+VLAN Name                             Status    Ports
+---- -------------------------------- --------- -------------------------------
+1    default                          active    Et0/1
+100  Clients                          active    Et0/0
+200  Managament                       active
+999  Parking_Lot                      active    Et0/2, Et0/3
+1000 Native                           active
+1002 fddi-default                     act/unsup
+1003 token-ring-default               act/unsup
+1004 fddinet-default                  act/unsup
+1005 trnet-default                    act/unsup
+```
+Почему интерфейс e0/1 указан в VLAN 1?  
+> Т.к. данный интерфейс не был настроен как транковый => находится в дефолтном vlan
+
+### Шаг 9. Вручную настройте интерфейс S1 e0/1 в качестве транка 802.1Q.
+a. Измените режим порта коммутатора, чтобы принудительно создать магистральный канал.  
+```
+S1(config)#int e0/1
+S1(config-if)#switchport trunk encapsulation dot1q
+S1(config-if)#switchport mode trunk
+```
+b. В рамках конфигурации транкового канала установите для native VLAN значение 1000.  
+```
+S1(config-if)#switchport trunk native vlan 1000
+```
+c. В качестве другой части конфигурации магистрали укажите, что VLAN 100, 200 и 1000 могут
+проходить по транковому каналу.  
+```
+S1(config-if)#switchport trunk allowed vlan 100,200,1000
+```
+d. Сохраните текущую конфигурацию в файл загрузочной конфигурации.  
+```
+S1(config-if)#end
+S1#copy running-config startup-config
+```
+e. Проверьте состояние транкового интерфейса.  
+```
+S1#show interfaces trunk
+
+Port        Mode             Encapsulation  Status        Native vlan
+Et0/1       on               802.1q         trunking      1000
+
+Port        Vlans allowed on trunk
+Et0/1       100,200,1000
+
+Port        Vlans allowed and active in management domain
+Et0/1       100,200,1000
+
+Port        Vlans in spanning tree forwarding state and not pruned
+Et0/1       100,200,1000
+```
+Вопрос:
+Какой IP-адрес был бы у ПК, если бы он был подключен к сети с помощью DHCP?
+> Ему бы присвоился адрес из диапазона APIPA 169.254.0.0/16
+
