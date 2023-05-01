@@ -146,7 +146,7 @@ R1(config-subif)#encapsulation dot1Q 200
 R1(config-subif)#ip address 192.168.1.65 255.255.255.224
 R1(config-subif)#int e0/1.1000
 R1(config-subif)#encapsulation dot1Q 1000 native
-R1(config-subif)#description Ntive
+R1(config-subif)#description Native
 ```
 c. Убедитесь, что вспомогательные интерфейсы работают.  
 ```
@@ -159,5 +159,44 @@ Ethernet0/1.200            192.168.1.65    YES manual up                    up
 Ethernet0/1.1000           unassigned      YES unset  up                    up
 Ethernet0/2                unassigned      YES unset  administratively down down
 Ethernet0/3                unassigned      YES unset  administratively down down
+```
+### Шаг 5. Настройте e0/1 на R2, затем e0/0 и статическую маршрутизацию для обоих
+маршрутизаторов
+a. Настройте e0/1 на R2 с первым IP-адресом подсети C, рассчитанным ранее.  
+```
+R2(config)#int e0/1
+R2(config-if)#ip address 192.168.1.97 255.255.255.240
+R2(config-if)#no shutdown
+```
+b. Настройте интерфейс e0/0 для каждого маршрутизатора на основе приведенной выше таблицы
+IP-адресации.  
+```
+R1(config)#int e0/0
+R1(config-if)#ip address 10.0.0.1 255.255.255.252
+R1(config-if)#no shutdown
+
+R2(config)#int e0/0
+R2(config-if)#ip address 10.0.0.2 255.255.255.252
+R2(config-if)#no shutdown
+```
+c. Настройте маршрут по умолчанию на каждом маршрутизаторе, указываемый на IP-адрес e0/0 на
+другом маршрутизаторе.  
+```
+R1(config)#ip route 0.0.0.0 0.0.0.0 10.0.0.2
+R2(config)#ip route 0.0.0.0 0.0.0.0 10.0.0.1
+```
+d. Убедитесь, что статическая маршрутизация работает с помощью отправки эхо-запроса до адреса
+e0/1 R2 от R1.  
+```
+R1#ping 192.168.1.97
+Type escape sequence to abort.
+Sending 5, 100-byte ICMP Echos to 192.168.1.97, timeout is 2 seconds:
+!!!!!
+Success rate is 100 percent (5/5), round-trip min/avg/max = 1/1/1 ms
+```
+e. Сохраните текущую конфигурацию в файл загрузочной конфигурации.  
+```
+R1#copy running-config startup-config
+R2#copy running-config startup-config
 ```
 
