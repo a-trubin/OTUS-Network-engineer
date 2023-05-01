@@ -14,14 +14,14 @@
 
 |      Device     |      Interface     |      IPv6 Address             |
 |-----------------|--------------------|-------------------------------|
-|     R1          |     G0/0/0         |     2001:db8:acad:2::1 /64    |
-|     R1          |     G0/0/0         |     fe80::1                   |
-|     R1          |     G0/0/1         |     2001:db8:acad:1::1/64     |
-|     R1          |     G0/0/1         |     fe80::1                   |
-|     R2          |     G0/0/0         |     2001:db8:acad:2::2/64     |
-|     R2          |     G0/0/0         |     fe80::2                   |
-|     R2          |     G0/0/1         |     2001:db8:acad:3::1 /64    |
-|     R2          |     G0/0/1         |     fe80::1                   |
+|     R1          |     e0/0         |     2001:db8:acad:2::1 /64    |
+|     R1          |     e0/0         |     fe80::1                   |
+|     R1          |     e0/1         |     2001:db8:acad:1::1/64     |
+|     R1          |     e0/1         |     fe80::1                   |
+|     R2          |     e0/0         |     2001:db8:acad:2::2/64     |
+|     R2          |     e0/0         |     fe80::2                   |
+|     R2          |     e0/1         |     2001:db8:acad:3::1 /64    |
+|     R2          |     e0/1         |     fe80::1                   |
 |     PC-A        |     NIC            |     DHCP                      |
 |     PC-B        |     NIC            |     DHCP                      |
 
@@ -193,18 +193,39 @@ R2#copy running-config startup-config
 ## Часть 2: Проверка назначения адресов SLAAC с R1
 В части 2 вы проверите, что хост PC-A получил IPv6 адрес с помощью метода SLAAC.
 ```
-PC-A> show ipv6
+C:\>ipconfig /all
 
-NAME              : PC-A[1]
-LINK-LOCAL SCOPE  : fe80::250:79ff:fe66:681a/64
-GLOBAL SCOPE      :
-DNS               :
-ROUTER LINK-LAYER :
-MAC               : 00:50:79:66:68:1a
-LPORT             : 20000
-RHOST:PORT        : 127.0.0.1:30000
-MTU:              : 1500
+FastEthernet0 Connection:(default port)
 
+   Connection-specific DNS Suffix..: 
+   Physical Address................: 0060.5C99.744C
+   Link-local IPv6 Address.........: FE80::260:5CFF:FE99:744C
+   IPv6 Address....................: ::
+   IPv4 Address....................: 0.0.0.0
+   Subnet Mask.....................: 0.0.0.0
+   Default Gateway.................: ::
+                                     0.0.0.0
+   DHCP Servers....................: 0.0.0.0
+   DHCPv6 IAID.....................: 
+   DHCPv6 Client DUID..............: 00-01-00-01-D9-99-58-B7-00-60-5C-99-74-4C
+   DNS Servers.....................: ::
+                                     0.0.0.0
+
+Bluetooth Connection:
+
+   Connection-specific DNS Suffix..: 
+   Physical Address................: 00D0.D3BC.D938
+   Link-local IPv6 Address.........: ::
+   IPv6 Address....................: ::
+   IPv4 Address....................: 0.0.0.0
+   Subnet Mask.....................: 0.0.0.0
+   Default Gateway.................: ::
+                                     0.0.0.0
+   DHCP Servers....................: 0.0.0.0
+   DHCPv6 IAID.....................: 
+   DHCPv6 Client DUID..............: 00-01-00-01-D9-99-58-B7-00-60-5C-99-74-4C
+   DNS Servers.....................: ::
+                                     0.0.0.0
 ```
 
 Откуда взялась часть адреса host-id?
@@ -220,7 +241,7 @@ MTU:              : 1500
 a. Создайте пул DHCP IPv6 на маршрутизаторе R1 с именем R1-STATELESS. Как часть этого пула назначьте адрес DNS-сервера как 2001:db8:acad::1 и доменное имя как stateless.com.  
 ```
 R1(config)#ipv6 dhcp pool R1-STATELESS
-R1(config-dhcpv6)#dns-server 2001:db8:acad::254
+R1(config-dhcpv6)#dns-server 2001:db8:acad::1
 R1(config-dhcpv6)#domain-name STATELESS.com
 ```
 b. Настройте интерфейс e0/1 на маршрутизаторе R1, чтобы предоставить флаг конфигурации OTHER для локальной сети маршрутизатора R1, и укажите только что созданный пул DHCP в качестве ресурса DHCP для этого интерфейса.  
@@ -237,24 +258,96 @@ R1#copy running-config startup-config
 d.	Перезагрузите PC-A.  
 
 e.	Просмотрите вывод ipconfig /all и обратите внимание на изменения.  
+```
+C:\>ipconfig /all
 
+FastEthernet0 Connection:(default port)
+
+   Connection-specific DNS Suffix..: STATELESS.com 
+   Physical Address................: 0060.5C99.744C
+   Link-local IPv6 Address.........: FE80::260:5CFF:FE99:744C
+   IPv6 Address....................: 2001:DB8:ACAD:1:260:5CFF:FE99:744C
+   Autoconfiguration IP Address....: 169.254.116.76
+   Subnet Mask.....................: 255.255.0.0
+   Default Gateway.................: FE80::1
+                                     0.0.0.0
+   DHCP Servers....................: 0.0.0.0
+   DHCPv6 IAID.....................: 1253656483
+   DHCPv6 Client DUID..............: 00-01-00-01-D9-99-58-B7-00-60-5C-99-74-4C
+   DNS Servers.....................: 2001:DB8:ACAD::1
+                                     0.0.0.0
+
+Bluetooth Connection:
+
+   Connection-specific DNS Suffix..: STATELESS.com 
+   Physical Address................: 00D0.D3BC.D938
+   Link-local IPv6 Address.........: ::
+   IPv6 Address....................: ::
+   IPv4 Address....................: 0.0.0.0
+   Subnet Mask.....................: 0.0.0.0
+   Default Gateway.................: ::
+                                     0.0.0.0
+   DHCP Servers....................: 0.0.0.0
+   DHCPv6 IAID.....................: 1253656483
+   DHCPv6 Client DUID..............: 00-01-00-01-D9-99-58-B7-00-60-5C-99-74-4C
+   DNS Servers.....................: ::
+                                     0.0.0.0
+```
 ## Часть 4: Настройка сервера DHCPv6 с контролем состояния на R1
 В части 4 вы настроите R1 для ответа на запросы DHCPv6 из локальной сети на R2.  
 
 a. Создайте пул DHCPv6 на R1 для сети 2001:db8:acad:3:aaaa::/80. Это обеспечит адресами локальную сеть, подключенную к интерфейсу e0/1 на R2. Как часть пула, установите DNS-сервер на 2001:db8:acad::254 и установите доменное имя на STATEFUL.com.
 ```
+R1(config)#ipv6 dhcp pool R2-STATEFUL
+R1(config-dhcpv6)#address prefix 2001:db8:acad:3:aaa::/80
+R1(config-dhcpv6)#dns-server 2001:db8:acad::254
+R1(config-dhcpv6)#domain-name STATEFUL.com
 ```
 b. Назначьте только что созданный пул DHCPv6 на интерфейс e0/0 на R1.
 ```
+R1(config)#int e0/0
+R1(config-if)#ipv6 dhcp server R2-STATEFUL
 ```
 ## Часть 5: Настройка и проверка ретрансляции DHCPv6 на R2.  
 В части 5 вы настроите и проверите ретрансляцию DHCPv6 на R2, что позволит PC-B получить IPv6 адрес.  
 ### Шаг 1:Включите питание PC-B и изучите генерируемый им адрес SLAAC.  
 ```
+FastEthernet0 Connection:(default port)
+
+   Connection-specific DNS Suffix..: 
+   Physical Address................: 0060.47EA.8D88
+   Link-local IPv6 Address.........: FE80::260:47FF:FEEA:8D88
+   IPv6 Address....................: 2001:DB8:ACAD:3:260:47FF:FEEA:8D88
+   IPv4 Address....................: 0.0.0.0
+   Subnet Mask.....................: 0.0.0.0
+   Default Gateway.................: FE80::1
+                                     0.0.0.0
+   DHCP Servers....................: 0.0.0.0
+   DHCPv6 IAID.....................: 
+   DHCPv6 Client DUID..............: 00-01-00-01-49-A2-68-53-00-60-47-EA-8D-88
+   DNS Servers.....................: ::
+                                     0.0.0.0
+
+Bluetooth Connection:
+
+   Connection-specific DNS Suffix..: 
+   Physical Address................: 000A.4196.103B
+   Link-local IPv6 Address.........: ::
+   IPv6 Address....................: ::
+   IPv4 Address....................: 0.0.0.0
+   Subnet Mask.....................: 0.0.0.0
+   Default Gateway.................: ::
+                                     0.0.0.0
+   DHCP Servers....................: 0.0.0.0
+   DHCPv6 IAID.....................: 
+   DHCPv6 Client DUID..............: 00-01-00-01-49-A2-68-53-00-60-47-EA-8D-88
+   DNS Servers.....................: ::
+                                     0.0.0.0
 ```
 ### Шаг 2: Настройте R2 в качестве агента ретрансляции DHCP для локальной сети на G0/0/1.  
-a.	Настройте команду ipv6 dhcp relay на интерфейсе G0/0/1 на R2, указав адрес назначения интерфейса G0/0/0 на R1. Также настройте команду managed-config-flag.  
+a.	Настройте команду ipv6 dhcp relay на интерфейсе e0/1 на R2, указав адрес назначения интерфейса e0/0 на R1. Также настройте команду managed-config-flag.  
 ```
+
 ```
 b.	Сохраните конфигурацию.  
 ```
