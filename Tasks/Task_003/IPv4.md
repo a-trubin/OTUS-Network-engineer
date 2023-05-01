@@ -50,7 +50,7 @@
 
 Подсеть Б:  
 
-192.168.1.64/27 (.65-.94)  
+> 192.168.1.64/27 (.65-.94)  
 
 Запишите первый IP-адрес в таблицу адресации для маршрутизатора R1 e0/1.200. Запишите второй IP-адрес в таблицу адресов для S1 VLAN 1 и введите соответствующий шлюз по умолчанию.  
 
@@ -58,10 +58,74 @@
 
 Подсеть С:  
 
-192.168.1.96/28 (.97-.110)  
+> 192.168.1.96/28 (.97-.110)  
 
 Запишите первый IP-адрес в таблицу адресации для маршрутизатора R2 e0/1.
 
+### Шаг 2. Создайте сеть согласно топологии  
+Подключите устройства, как показано в топологии, и подсоедините необходимые кабели.  
 
+### Шаг 3. Произведите базовую настройку маршрутизаторов.
+a. Назначьте маршрутизатору имя устройства. 
+```
+Router(config)#hostname R1
+Router(config)#hostname R2
+```
+b. Отключите поиск DNS, чтобы предотвратить попытки маршрутизатора неверно преобразовывать
+введенные команды таким образом, как будто они являются именами узлов.  
+```
+R1(config)#no ip domain lookup
+R2(config)#no ip domain lookup
+```
+c. Назначьте class в качестве зашифрованного пароля привилегированного режима EXEC.  
+```
+R1(config)#enable secret class
+R2(config)#enable secret class
+```
+d. Назначьте cisco в качестве пароля консоли и включите вход в систему по паролю.  
+```
+R1(config)#line console 0
+R1(config-line)#password cisco
+R1(config-line)#login
+
+
+R2(config)#line console 0
+R2(config-line)#password cisco
+R2(config-line)#login
+```
+e. Назначьте cisco в качестве пароля VTY и включите вход в систему по паролю.  
+```
+R1(config)#line vty 0 4
+R1(config-line)#password cisco
+R1(config-line)#login
+
+R2(config)#line vty 0 4
+R2(config-line)#password cisco
+R2(config-line)#login
+```
+f. Зашифруйте открытые пароли.  
+```
+R1(config)#service password-encryption
+
+R2(config)#service password-encryption
+```
+g. Создайте баннер с предупреждением о запрете несанкционированного доступа к устройству.  
+```
+R1(config)#banner motd "Unauthorized access is denied"
+
+R2(config)#banner motd "Unauthorized access is denied"
+```
+h. Сохраните текущую конфигурацию в файл загрузочной конфигурации.  
+```
+R1#copy running-config startup-config
+
+R2#copy running-config startup-config
+```
+i. Установите часы на маршрутизаторе на сегодняшнее время и дату.  
+```
+R1#clock set 15:59:00 01 may 2023
+
+R2#clock set 15:59:00 01 may 2023
+```
 
 
