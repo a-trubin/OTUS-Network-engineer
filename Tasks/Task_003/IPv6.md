@@ -311,54 +311,26 @@ R1(config-if)#ipv6 dhcp server R2-STATEFUL
 ## Часть 5: Настройка и проверка ретрансляции DHCPv6 на R2.  
 В части 5 вы настроите и проверите ретрансляцию DHCPv6 на R2, что позволит PC-B получить IPv6 адрес.  
 ### Шаг 1:Включите питание PC-B и изучите генерируемый им адрес SLAAC.  
-```
-FastEthernet0 Connection:(default port)
 
-   Connection-specific DNS Suffix..: 
-   Physical Address................: 0060.47EA.8D88
-   Link-local IPv6 Address.........: FE80::260:47FF:FEEA:8D88
-   IPv6 Address....................: 2001:DB8:ACAD:3:260:47FF:FEEA:8D88
-   IPv4 Address....................: 0.0.0.0
-   Subnet Mask.....................: 0.0.0.0
-   Default Gateway.................: FE80::1
-                                     0.0.0.0
-   DHCP Servers....................: 0.0.0.0
-   DHCPv6 IAID.....................: 
-   DHCPv6 Client DUID..............: 00-01-00-01-49-A2-68-53-00-60-47-EA-8D-88
-   DNS Servers.....................: ::
-                                     0.0.0.0
+![image](https://user-images.githubusercontent.com/130133180/235524069-8a1f6b8f-c7ec-43f0-916e-6f26b76bb486.png)
 
-Bluetooth Connection:
-
-   Connection-specific DNS Suffix..: 
-   Physical Address................: 000A.4196.103B
-   Link-local IPv6 Address.........: ::
-   IPv6 Address....................: ::
-   IPv4 Address....................: 0.0.0.0
-   Subnet Mask.....................: 0.0.0.0
-   Default Gateway.................: ::
-                                     0.0.0.0
-   DHCP Servers....................: 0.0.0.0
-   DHCPv6 IAID.....................: 
-   DHCPv6 Client DUID..............: 00-01-00-01-49-A2-68-53-00-60-47-EA-8D-88
-   DNS Servers.....................: ::
-                                     0.0.0.0
-```
 ### Шаг 2: Настройте R2 в качестве агента ретрансляции DHCP для локальной сети на G0/0/1.  
 a.	Настройте команду ipv6 dhcp relay на интерфейсе e0/1 на R2, указав адрес назначения интерфейса e0/0 на R1. Также настройте команду managed-config-flag.  
 ```
-
+R2(config)#interface e0/1
+R2(config-if)#ipv6 nd managed-config-flag
+R2(config-if)#ipv6 dhcp relay destination 2001:db8:acad:2::1 e0/0
 ```
 b.	Сохраните конфигурацию.  
 ```
+R2#copy running-config startup-config
 ```
 ### Шаг 3: Попытайтесь получить IPv6-адрес от DHCPv6 на ПК-B.  
 a.	Перезагрузите ПК-B.  
-```
-```
 b.	Откройте командную строку на ПК-B и введите команду ipconfig /all и просмотрите результаты работы ретрансляции DHCPv6. 
-```
-```
-c.	Протестируйте соединение, пингуя IP-адрес интерфейса G0/0/1 на R1.  
-```
-```
+
+![image](https://user-images.githubusercontent.com/130133180/235525758-2db2ef39-7f7a-4ee6-a984-1bf77853cb15.png)
+
+c.	Протестируйте соединение, пингуя IP-адрес интерфейса e0/1 на R1.  
+![image](https://user-images.githubusercontent.com/130133180/235525980-5b2a368a-2890-49cb-a4a7-b49b360cfd5e.png)
+
