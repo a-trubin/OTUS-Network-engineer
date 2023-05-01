@@ -325,3 +325,105 @@ Et0/1       100,200,1000
 Какой IP-адрес был бы у ПК, если бы он был подключен к сети с помощью DHCP?
 > Ему бы присвоился адрес из диапазона APIPA 169.254.0.0/16
 
+## Часть 2. Настройка и проверка двух серверов DHCPv4 на маршрутизаторе R1  
+В части 2 вы настроите и проверите сервер DHCPv4 на маршрутизаторе R1. Сервер DHCPv4 будет обслуживать две подсети, подсеть A и подсеть C.  
+
+### Настройте R1 с пулами DHCPv4 для двух поддерживаемых подсетей.  
+a. Исключите первые пять используемых адресов из каждого пула адресов.  
+```
+R1(config)#ip dhcp excluded-address 192.168.1.1 192.168.1.5
+```
+b. Создайте пул DHCP (используйте уникальное имя для каждого пула).  
+```
+R1(config)#ip dhcp pool POOL_1
+```
+c. Укажите сеть, поддерживающую этот DHCP-сервер.  
+```
+R1(dhcp-config)#network 192.168.1.0 255.255.255.192
+```
+d. В качестве имени домена укажите CCNA-lab.com.  
+```
+R1(dhcp-config)#domain-name ccna-lab.com
+```
+e. Настройте соответствующий шлюз по умолчанию для каждого пула DHCP.  
+```
+R1(dhcp-config)#default-router 192.168.1.1
+```
+f. Настройте время аренды на 2 дня 12 часов и 30 минут.  
+```
+R1(dhcp-config)#lease 2 12 30
+```
+g. Затем настройте второй пул DHCPv4, используя имя пула R2_Client_LAN и вычислите сеть, шлюз по умолчанию, и используйте то же имя домена и время аренды, что и предыдущий пул DHCP. 
+```
+R1(config)#ip dhcp excluded-address 192.168.1.97 192.168.1.101
+R1(config)#ip dhcp pool R2_Client_LAN
+R1(dhcp-config)#network 192.168.1.96 255.255.255.240
+R1(dhcp-config)#default-router 192.168.1.97
+R1(dhcp-config)#domain-name ccna-lab.com
+R1(dhcp-config)#lease 2 12 30
+```
+### Шаг 2. Сохраните конфигурацию.  
+Сохраните текущую конфигурацию в файл загрузочной конфигурации.
+```
+R1#copy running-config startup-config
+```
+### Шаг 3. Проверка конфигурации сервера DHCPv4  
+a. Чтобы просмотреть сведения о пуле, выполните команду show ip dhcp pool.  
+```
+R1#show ip dhcp pool
+
+Pool POOL_1 :
+ Utilization mark (high/low)    : 100 / 0
+ Subnet size (first/next)       : 0 / 0
+ Total addresses                : 62
+ Leased addresses               : 0
+ Pending event                  : none
+ 1 subnet is currently in the pool :
+ Current index        IP address range                    Leased addresses
+ 192.168.1.1          192.168.1.1      - 192.168.1.62      0
+
+Pool R2_Client_LAN :
+ Utilization mark (high/low)    : 100 / 0
+ Subnet size (first/next)       : 0 / 0
+ Total addresses                : 14
+ Leased addresses               : 0
+ Pending event                  : none
+ 1 subnet is currently in the pool :
+ Current index        IP address range                    Leased addresses
+ 192.168.1.97         192.168.1.97     - 192.168.1.110     0
+```
+b. Выполните команду show ip dhcp bindings для проверки установленных назначений адресов DHCP.  
+```
+R1#show ip dhcp binding
+Bindings from all pools not associated with VRF:
+IP address          Client-ID/              Lease expiration        Type
+                    Hardware address/
+                    User name
+```
+c. Выполните команду show ip dhcp server statistics для проверки сообщений DHCP.  
+```
+R1#show ip dhcp server statistics
+Memory usage         25168
+Address pools        2
+Database agents      0
+Automatic bindings   0
+Manual bindings      0
+Expired bindings     0
+Malformed messages   0
+Secure arp entries   0
+
+Message              Received
+BOOTREQUEST          0
+DHCPDISCOVER         0
+DHCPREQUEST          0
+DHCPDECLINE          0
+DHCPRELEASE          0
+DHCPINFORM           0
+
+Message              Sent
+BOOTREPLY            0
+DHCPOFFER            0
+DHCPACK              0
+DHCPNAK              0
+```
+
