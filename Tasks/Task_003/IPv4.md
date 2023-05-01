@@ -127,5 +127,37 @@ R1#clock set 15:59:00 01 may 2023
 
 R2#clock set 15:59:00 01 may 2023
 ```
-
+### Шаг 4. Настройка маршрутизации между сетями VLAN на маршрутизаторе R1  
+a. Активируйте интерфейс e0/1 на маршрутизаторе.  
+```
+R1(config)#int e0/1
+R1(config-if)#no shutdown
+R1(config-if)#exit
+```
+b. Настройте подинтерфейсы для каждой VLAN в соответствии с требованиями таблицы IPадресации. Все субинтерфейсы используют инкапсуляцию 802.1Q и назначаются первый полезный адрес из вычисленного пула IP-адресов. Убедитесь, что подинтерфейсу для native VLAN не назначен IP-адрес. Включите описание для каждого подинтерфейса.  
+```
+R1(config)#int e0/1.100
+R1(config-subif)#description Clients
+R1(config-subif)#encapsulation dot1Q 100
+R1(config-subif)#ip address 192.168.1.1 255.255.255.192
+R1(config-subif)#int e0/1.200
+R1(config-subif)#description Management
+R1(config-subif)#encapsulation dot1Q 200
+R1(config-subif)#ip address 192.168.1.65 255.255.255.224
+R1(config-subif)#int e0/1.1000
+R1(config-subif)#encapsulation dot1Q 1000 native
+R1(config-subif)#description Ntive
+```
+c. Убедитесь, что вспомогательные интерфейсы работают.  
+```
+R1#show ip interface brief
+Interface                  IP-Address      OK? Method Status                Protocol
+Ethernet0/0                unassigned      YES unset  administratively down down
+Ethernet0/1                unassigned      YES unset  up                    up
+Ethernet0/1.100            192.168.1.1     YES manual up                    up
+Ethernet0/1.200            192.168.1.65    YES manual up                    up
+Ethernet0/1.1000           unassigned      YES unset  up                    up
+Ethernet0/2                unassigned      YES unset  administratively down down
+Ethernet0/3                unassigned      YES unset  administratively down down
+```
 
