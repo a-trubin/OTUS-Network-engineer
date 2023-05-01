@@ -367,7 +367,8 @@ R1(dhcp-config)#lease 2 12 30
 ```
 R1#copy running-config startup-config
 ```
-### Шаг 3. Проверка конфигурации сервера DHCPv4  
+### Шаг 3. Проверка конфигурации сервера DHCPv4 
+*Все команды выполнены после полной настройки PC*
 a. Чтобы просмотреть сведения о пуле, выполните команду show ip dhcp pool.  
 ```
 R1#show ip dhcp pool
@@ -376,21 +377,21 @@ Pool POOL_1 :
  Utilization mark (high/low)    : 100 / 0
  Subnet size (first/next)       : 0 / 0
  Total addresses                : 62
- Leased addresses               : 0
+ Leased addresses               : 1
  Pending event                  : none
  1 subnet is currently in the pool :
  Current index        IP address range                    Leased addresses
- 192.168.1.1          192.168.1.1      - 192.168.1.62      0
+ 192.168.1.7          192.168.1.1      - 192.168.1.62      1
 
 Pool R2_Client_LAN :
  Utilization mark (high/low)    : 100 / 0
  Subnet size (first/next)       : 0 / 0
  Total addresses                : 14
- Leased addresses               : 0
+ Leased addresses               : 1
  Pending event                  : none
  1 subnet is currently in the pool :
  Current index        IP address range                    Leased addresses
- 192.168.1.97         192.168.1.97     - 192.168.1.110     0
+ 192.168.1.103        192.168.1.97     - 192.168.1.110     1
 ```
 b. Выполните команду show ip dhcp bindings для проверки установленных назначений адресов DHCP.  
 ```
@@ -399,14 +400,16 @@ Bindings from all pools not associated with VRF:
 IP address          Client-ID/              Lease expiration        Type
                     Hardware address/
                     User name
+192.168.1.6         0100.5079.6668.14       May 04 2023 05:54 AM    Automatic
+192.168.1.102       0100.5079.6668.17       May 04 2023 06:08 AM    Automatic
 ```
 c. Выполните команду show ip dhcp server statistics для проверки сообщений DHCP.  
 ```
 R1#show ip dhcp server statistics
-Memory usage         25168
+Memory usage         42086
 Address pools        2
 Database agents      0
-Automatic bindings   0
+Automatic bindings   2
 Manual bindings      0
 Expired bindings     0
 Malformed messages   0
@@ -414,16 +417,76 @@ Secure arp entries   0
 
 Message              Received
 BOOTREQUEST          0
-DHCPDISCOVER         0
-DHCPREQUEST          0
+DHCPDISCOVER         4
+DHCPREQUEST          2
 DHCPDECLINE          0
 DHCPRELEASE          0
 DHCPINFORM           0
 
 Message              Sent
 BOOTREPLY            0
-DHCPOFFER            0
-DHCPACK              0
+DHCPOFFER            2
+DHCPACK              2
 DHCPNAK              0
 ```
+### Шаг 4. Попытка получить IP-адрес от DHCP на PC-A
+```
+VPCS> show ip
 
+NAME        : VPCS[1]
+IP/MASK     : 192.168.1.6/26
+GATEWAY     : 192.168.1.1
+DNS         :
+DHCP SERVER : 192.168.1.1
+DHCP LEASE  : 217712, 217800/108900/190575
+DOMAIN NAME : ccna-lab.com
+MAC         : 00:50:79:66:68:14
+LPORT       : 20000
+RHOST:PORT  : 127.0.0.1:30000
+MTU         : 1500
+```
+c. Проверьте подключение с помощью эхо-запроса на IP-адрес интерфейса R1 e0/1.  
+```
+VPCS> ping 192.168.1.1
+
+84 bytes from 192.168.1.1 icmp_seq=1 ttl=255 time=0.590 ms
+84 bytes from 192.168.1.1 icmp_seq=2 ttl=255 time=0.455 ms
+84 bytes from 192.168.1.1 icmp_seq=3 ttl=255 time=0.342 ms
+```
+## Часть 3. Настройка и проверка DHCP-ретрансляции на R2  
+В части 3 настраивается R2 для ретрансляции DHCP-запросов из локальной сети на интерфейсе
+e0/1 на DHCP-сервер R1.  
+### Шаг 1. Настройка R2 в качестве агента DHCP-ретрансляции для локальной сети на e0/1
+a. Настройте команду ip helper-address на e0/1, указав IP-адрес e0/0 R1  
+```
+R2(config)#int e0/1
+R2(config-if)#ip helper-address 10.0.0.1
+```
+b. Сохраните конфигурацию.  
+```
+R2#copy running-config startup-config
+```
+## Шаг 2. Попытка получить IP-адрес от DHCP на PC-B  
+```
+VPCS> show ip
+
+NAME        : VPCS[1]
+IP/MASK     : 192.168.1.102/28
+GATEWAY     : 192.168.1.97
+DNS         :
+DHCP SERVER : 10.0.0.1
+DHCP LEASE  : 217792, 217800/108900/190575
+DOMAIN NAME : ccna-lab.com
+MAC         : 00:50:79:66:68:17
+LPORT       : 20000
+RHOST:PORT  : 127.0.0.1:30000
+MTU         : 1500
+```
+c. Проверьте подключение с помощью эхо-запроса на IP-адрес интерфейса R1 e0/1.
+```
+VPCS> ping 192.168.1.1
+
+84 bytes from 192.168.1.1 icmp_seq=1 ttl=254 time=0.530 ms
+84 bytes from 192.168.1.1 icmp_seq=2 ttl=254 time=1.011 ms
+84 bytes from 192.168.1.1 icmp_seq=3 ttl=254 time=0.779 ms
+```
