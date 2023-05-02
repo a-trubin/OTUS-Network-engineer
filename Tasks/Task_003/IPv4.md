@@ -160,8 +160,7 @@ Ethernet0/1.1000           unassigned      YES unset  up                    up
 Ethernet0/2                unassigned      YES unset  administratively down down
 Ethernet0/3                unassigned      YES unset  administratively down down
 ```
-### Шаг 5. Настройте e0/1 на R2, затем e0/0 и статическую маршрутизацию для обоих
-маршрутизаторов
+### Шаг 5. Настройте e0/1 на R2, затем e0/0 и статическую маршрутизацию для обоих маршрутизаторов
 a. Настройте e0/1 на R2 с первым IP-адресом подсети C, рассчитанным ранее.  
 ```
 R2(config)#int e0/1
