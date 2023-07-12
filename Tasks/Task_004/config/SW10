@@ -1,0 +1,115 @@
+
+!
+version 15.1
+service timestamps debug datetime msec
+service timestamps log datetime msec
+no service password-encryption
+service compress-config
+!
+hostname SW-10
+!
+boot-start-marker
+boot-end-marker
+!
+!
+!
+no aaa new-model
+!
+ip cef
+!
+!
+no ip domain-lookup
+no ipv6 cef
+ipv6 multicast rpf use-bgp
+!
+!
+!
+!
+!
+!
+!
+spanning-tree mode pvst
+spanning-tree extend system-id
+!
+!
+!
+!
+vlan internal allocation policy ascending
+!
+! 
+!
+!
+!
+!
+!
+!
+!
+!
+interface Ethernet0/0
+ no shutdown
+ switchport trunk encapsulation dot1q
+ switchport trunk allowed vlan 22,23
+ switchport mode trunk
+ duplex auto
+!
+interface Ethernet0/1
+ no shutdown
+ switchport trunk encapsulation dot1q
+ switchport trunk allowed vlan 22
+ switchport mode trunk
+ duplex auto
+!
+interface Ethernet0/2
+ no shutdown
+ switchport trunk encapsulation dot1q
+ switchport trunk allowed vlan 21-23
+ switchport mode trunk
+ duplex auto
+!
+interface Ethernet0/3
+ no shutdown
+ shutdown
+ duplex auto
+!
+interface Ethernet1/0
+ no shutdown
+ switchport access vlan 22
+ switchport mode access
+ duplex auto
+!
+interface Ethernet1/1
+ no shutdown
+ switchport access vlan 23
+ switchport mode access
+ duplex auto
+!
+interface Ethernet1/2
+ no shutdown
+ duplex auto
+!
+interface Ethernet1/3
+ no shutdown
+ duplex auto
+!
+interface Vlan23
+ no shutdown
+ ip address 10.101.23.10 255.255.255.0
+!
+ip default-gateway 10.101.23.100
+!
+no ip http server
+!
+!
+!
+!
+!
+control-plane
+!
+!
+line con 0
+ logging synchronous
+line aux 0
+line vty 0 4
+ login
+!
+end
