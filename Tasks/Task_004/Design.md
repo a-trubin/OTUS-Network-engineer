@@ -6,6 +6,12 @@
 4. Настроить VLAN/Loopbackup interface управления для сетевых устройств  
 5. Настроить сети офисов так, чтобы не возникало broadcast штормов, а использование линков было максимально оптимизировано
 
+## Топология
+
+![Network scheme drawio](https://github.com/a-trubin/OTUS-Network-engineer/assets/130133180/8f918a38-5029-4eb7-94fa-84791af0f12e)
+
+## Таблица адресации сетевых устройств
+
 ```
 +---+--------+-----------+-----------------+
 |   | Device | Interface | IP address|VLAN |
@@ -275,3 +281,52 @@
 |   |        |   Vlan13  |   192.168.13.3  |
 +---+--------+-----------+-----------------+
 ```
+# Краткое описание
+
+## Регион Москва  
+
+В данной сети VLAN-ы не поднимаются выше уровня L3 Коммутаторов. Между L3 коммутаторами настроен протокол HSRP.
+
+![SW4 HSRP](https://github.com/a-trubin/OTUS-Network-engineer/assets/130133180/da63caac-70df-4534-9be3-c29148393bf7)
+
+
+![SW5 HSRP](https://github.com/a-trubin/OTUS-Network-engineer/assets/130133180/812ebad6-33f8-4b40-9ccb-4167e933de87)
+
+Также настроен протокол STP.
+
+![SW4 STP](https://github.com/a-trubin/OTUS-Network-engineer/assets/130133180/a5b1595e-2ff9-4611-82b4-cf49574061d3)
+
+![SW5 STP](https://github.com/a-trubin/OTUS-Network-engineer/assets/130133180/1485bcec-9629-489a-ba2b-389ce884d75f)
+
+Проверка доступности с конечных хостов.
+
+С VLAN 11:
+
+![VPC1 ping](https://github.com/a-trubin/OTUS-Network-engineer/assets/130133180/d1cd53f7-2161-45c4-aa1a-13ad6741ff8a)
+
+C VLAN 12:
+
+![VPC7 ping](https://github.com/a-trubin/OTUS-Network-engineer/assets/130133180/9a345683-0cca-4563-8c50-635cc1da24a3)
+
+
+## Регион Санкт-Петербург
+
+В данной сети реализована схема Router-on-a-Stick и настроен протокол HSRP между R16 и R17.
+
+![R16 HSRP](https://github.com/a-trubin/OTUS-Network-engineer/assets/130133180/539f6a10-634e-4f68-9784-bef8b0afe113)
+
+![R17 HSRP](https://github.com/a-trubin/OTUS-Network-engineer/assets/130133180/8ae067e5-634f-4a1e-85b6-5800a5e5d01d)
+
+Проверка доступности с конечных хостов.
+
+C VLAN 21:
+
+![VPC8 ping](https://github.com/a-trubin/OTUS-Network-engineer/assets/130133180/2a00aac4-907d-473a-aa2c-887ade5e3d88)
+
+C VLAN 22:
+
+![VPC ping](https://github.com/a-trubin/OTUS-Network-engineer/assets/130133180/fde32f00-cf42-43fc-9e05-72c0964edb4d)
+
+## Регион Чокурдах
+
+В данной сети реализована стандартная схема Router-on-a-Stick на одном роутере. В проверке не нуждается.
