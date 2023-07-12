@@ -1,0 +1,135 @@
+
+!
+version 15.1
+service timestamps debug datetime msec
+service timestamps log datetime msec
+no service password-encryption
+service compress-config
+!
+hostname SW5-DIS
+!
+boot-start-marker
+boot-end-marker
+!
+!
+!
+no aaa new-model
+!
+ip cef
+!
+!
+no ip domain-lookup
+no ipv6 cef
+ipv6 multicast rpf use-bgp
+!
+!
+!
+!
+!
+!
+!
+!
+spanning-tree mode pvst
+spanning-tree extend system-id
+spanning-tree vlan 11,13 priority 4096
+spanning-tree vlan 12 priority 8192
+!
+!
+!
+!
+vlan internal allocation policy ascending
+!
+! 
+!
+!
+!
+!
+!
+!
+!
+!
+interface Ethernet0/0
+ no shutdown
+ switchport trunk encapsulation dot1q
+ switchport trunk allowed vlan 12,13
+ switchport mode trunk
+ duplex auto
+ no cdp enable
+!
+interface Ethernet0/1
+ no shutdown
+ switchport trunk encapsulation dot1q
+ switchport trunk allowed vlan 11,13
+ switchport mode trunk
+ duplex auto
+ no cdp enable
+!
+interface Ethernet0/2
+ no shutdown
+ no switchport
+ ip address 192.168.10.5 255.255.255.0
+ duplex auto
+!
+interface Ethernet0/3
+ no shutdown
+ shutdown
+ duplex auto
+!
+interface Ethernet1/0
+ no shutdown
+ no switchport
+ ip address 192.168.8.5 255.255.255.0
+ duplex auto
+!
+interface Ethernet1/1
+ no shutdown
+ no switchport
+ ip address 192.168.9.5 255.255.255.0
+ duplex auto
+!
+interface Ethernet1/2
+ no shutdown
+ duplex auto
+!
+interface Ethernet1/3
+ no shutdown
+ duplex auto
+!
+interface Vlan11
+ no shutdown
+ ip address 192.168.11.5 255.255.255.0
+ standby 11 ip 192.168.11.100
+ standby 11 priority 95
+ standby 11 preempt
+!
+interface Vlan12
+ no shutdown
+ ip address 192.168.12.5 255.255.255.0
+ standby 12 ip 192.168.12.100
+ standby 12 priority 110
+ standby 12 preempt
+!
+interface Vlan13
+ no shutdown
+ ip address 192.168.13.5 255.255.255.0
+ standby 13 ip 192.168.13.100
+ standby 13 priority 95
+ standby 13 preempt
+!
+!
+no ip http server
+!
+!
+!
+!
+!
+control-plane
+!
+!
+line con 0
+ logging synchronous
+line aux 0
+line vty 0 4
+ login
+!
+end
