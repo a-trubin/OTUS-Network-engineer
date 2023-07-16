@@ -1,0 +1,158 @@
+
+!
+! Last configuration change at 15:48:57 UTC Sun Jul 16 2023
+!
+version 15.5
+service timestamps debug datetime msec
+service timestamps log datetime msec
+no service password-encryption
+!
+hostname R28
+!
+boot-start-marker
+boot-end-marker
+!
+!
+!
+no aaa new-model
+!
+!
+!
+bsd-client server url https://cloudsso.cisco.com/as/token.oauth2
+mmi polling-interval 60
+no mmi auto-configure
+no mmi pvc
+mmi snmp-timeout 180
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+
+
+!
+!
+!
+!
+no ip domain lookup
+ip cef
+no ipv6 cef
+!
+multilink bundle-name authenticated
+!
+!
+!
+!
+!
+!
+!
+cts logging verbose
+!
+!
+!
+redundancy
+!
+!
+track 1 ip sla 1 reachability
+!
+track 2 ip sla 2 reachability
+!
+! 
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+interface Ethernet0/0
+ no shutdown
+ no ip address
+!
+interface Ethernet0/0.31
+ no shutdown
+ encapsulation dot1Q 31
+ ip address 172.16.31.28 255.255.255.0
+ ip policy route-map PATH
+!
+interface Ethernet0/0.32
+ no shutdown
+ encapsulation dot1Q 32
+ ip address 172.16.32.28 255.255.255.0
+ ip policy route-map PATH
+!
+interface Ethernet0/0.33
+ no shutdown
+ encapsulation dot1Q 33
+ ip address 172.16.33.28 255.255.255.0
+!
+interface Ethernet0/1
+ no shutdown
+ ip address 20.30.10.2 255.255.255.252
+!
+interface Ethernet0/2
+ no shutdown
+ no ip address
+ shutdown
+!
+interface Ethernet0/3
+ no shutdown
+ ip address 20.30.20.2 255.255.255.252
+!
+ip forward-protocol nd
+!
+!
+no ip http server
+no ip http secure-server
+ip route 0.0.0.0 0.0.0.0 20.30.20.1 track 1
+ip route 0.0.0.0 0.0.0.0 20.30.10.1 track 2
+!
+ip sla 1
+ icmp-echo 20.30.20.1 source-interface Ethernet0/3
+ frequency 10
+ip sla schedule 1 life forever start-time now
+ip sla 2
+ icmp-echo 20.30.10.1 source-interface Ethernet0/1
+ frequency 10
+ip sla schedule 2 life forever start-time now
+!
+route-map PATH permit 10
+ match ip address 100
+ set ip next-hop verify-availability 20.30.20.1 10 track 1
+ set ip next-hop verify-availability 20.30.10.1 20 track 2
+!
+!
+access-list 100 permit ip 172.16.31.0 0.0.0.255 any
+access-list 100 permit ip 172.16.32.0 0.0.0.255 any
+!
+control-plane
+!
+!
+!
+!
+!
+!
+!
+!
+line con 0
+ logging synchronous
+line aux 0
+line vty 0 4
+ login
+ transport input none
+!
+!
+end
