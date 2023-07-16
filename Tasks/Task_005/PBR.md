@@ -127,5 +127,10 @@ int e0/0.32
 
 ![image](https://github.com/a-trubin/OTUS-Network-engineer/assets/130133180/81e450ca-f165-4d25-b74a-df8f1b50b768)
 
+## Настройка (R27)
 
+Добавление маршрута по-умолчанию для офиса Лабытнанги:
 
+```
+ip route 0.0.0.0 0.0.0.0 20.30.30.1
+```
