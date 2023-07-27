@@ -1,6 +1,6 @@
 
 !
-! Last configuration change at 21:13:43 UTC Mon Jul 24 2023
+! Last configuration change at 22:44:56 UTC Wed Jul 26 2023
 !
 version 15.5
 service timestamps debug datetime msec
@@ -96,6 +96,8 @@ interface Ethernet0/3
 router ospf 1
  router-id 5.5.5.5
  area 101 stub no-summary
+ passive-interface default
+ no passive-interface Ethernet0/0
  network 192.168.0.0 0.0.0.255 area 101
 !
 ip forward-protocol nd
