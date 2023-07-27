@@ -13,7 +13,7 @@
 
 ## Топология
 
-![image](https://github.com/a-trubin/OTUS-Network-engineer/assets/130133180/c8d5254b-d6c4-4e9c-9e21-7c2ebff217b5)
+![image](https://github.com/a-trubin/OTUS-Network-engineer/assets/130133180/3c53a913-6dcb-4032-a518-fe991f6bc0c9)
 
 ![image](https://github.com/a-trubin/OTUS-Network-engineer/assets/130133180/659d88e3-e777-4282-befc-29b8e62c419c)
 
@@ -23,6 +23,11 @@
 R14:
 router ospf 1
  router-id 1.1.1.1
+ passive-interface default
+ no passive-interface Ethernet0/0
+ no passive-interface Ethernet0/1
+ no passive-interface Ethernet0/3
+ no passive-interface Ethernet1/0
  network 192.168.3.0 0.0.0.255 area 0
  network 192.168.4.0 0.0.0.255 area 0
  network 192.168.14.0 0.0.0.255 area 0
@@ -30,6 +35,11 @@ router ospf 1
 R15:
 router ospf 1
  router-id 2.2.2.2
+ passive-interface default
+ no passive-interface Ethernet0/0
+ no passive-interface Ethernet0/1
+ no passive-interface Ethernet0/3
+ no passive-interface Ethernet1/0
  network 192.168.2.0 0.0.0.255 area 0
  network 192.168.5.0 0.0.0.255 area 0
  network 192.168.14.0 0.0.0.255 area 0
@@ -46,6 +56,11 @@ router ospf 1
 R12:
 router ospf 1
  router-id 3.3.3.3
+ passive-interface default
+ no passive-interface Ethernet0/0
+ no passive-interface Ethernet0/1
+ no passive-interface Ethernet0/2
+ no passive-interface Ethernet0/3
  network 192.168.2.0 0.0.0.255 area 0
  network 192.168.4.0 0.0.0.255 area 0
  network 192.168.7.0 0.0.0.255 area 10
@@ -54,6 +69,11 @@ router ospf 1
 R13:
 router ospf 1
  router-id 4.4.4.4
+ passive-interface default
+ no passive-interface Ethernet0/0
+ no passive-interface Ethernet0/1
+ no passive-interface Ethernet0/2
+ no passive-interface Ethernet0/3
  network 192.168.3.0 0.0.0.255 area 0
  network 192.168.5.0 0.0.0.255 area 0
  network 192.168.6.0 0.0.0.255 area 10
@@ -62,9 +82,11 @@ router ospf 1
 SW4:
 router ospf 1
  router-id 7.7.7.7
+ passive-interface default
+ no passive-interface Ethernet1/0
+ no passive-interface Ethernet1/1
  network 192.168.6.0 0.0.0.255 area 10
  network 192.168.7.0 0.0.0.255 area 10
- network 192.168.10.0 0.0.0.255 area 10
  network 192.168.11.0 0.0.0.255 area 10
  network 192.168.12.0 0.0.0.255 area 10
  network 192.168.13.0 0.0.0.255 area 10
@@ -72,9 +94,11 @@ router ospf 1
 SW5:
 router ospf 1
  router-id 8.8.8.8
+ passive-interface default
+ no passive-interface Ethernet1/0
+ no passive-interface Ethernet1/
  network 192.168.8.0 0.0.0.255 area 10
  network 192.168.9.0 0.0.0.255 area 10
- network 192.168.10.0 0.0.0.255 area 10
  network 192.168.11.0 0.0.0.255 area 10
  network 192.168.12.0 0.0.0.255 area 10
  network 192.168.13.0 0.0.0.255 area 10
@@ -96,6 +120,8 @@ R19:
 router ospf 1
  router-id 5.5.5.5
  area 101 stub no-summary
+ passive-interface default
+ no passive-interface Ethernet0/0
  network 192.168.0.0 0.0.0.255 area 101
 ```
 Проверяем маршруты:
@@ -115,6 +141,8 @@ ip prefix-list area_102 seq 10 permit 0.0.0.0/0 le 32
 
 router ospf 1
  router-id 6.6.6.6
+ passive-interface default
+ no passive-interface Ethernet0/0
  network 192.168.1.0 0.0.0.255 area 102
  distribute-list prefix area_102 in
 ```
