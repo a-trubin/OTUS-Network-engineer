@@ -15,6 +15,8 @@
 
 ![image](https://github.com/a-trubin/OTUS-Network-engineer/assets/130133180/c8d5254b-d6c4-4e9c-9e21-7c2ebff217b5)
 
+![image](https://github.com/a-trubin/OTUS-Network-engineer/assets/130133180/659d88e3-e777-4282-befc-29b8e62c419c)
+
 ### Шаг 1. Маршрутизаторы R14-R15 находятся в зоне 0 - backbone.  
 
 ```
