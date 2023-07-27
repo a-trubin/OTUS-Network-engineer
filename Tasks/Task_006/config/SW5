@@ -1,6 +1,6 @@
 
 !
-! Last configuration change at 22:01:30 UTC Mon Jul 24 2023
+! Last configuration change at 00:31:31 UTC Thu Jul 27 2023
 !
 version 15.1
 service timestamps debug datetime msec
@@ -68,8 +68,9 @@ interface Ethernet0/1
 !
 interface Ethernet0/2
  no shutdown
- no switchport
- ip address 192.168.10.5 255.255.255.0
+ switchport trunk encapsulation dot1q
+ switchport trunk allowed vlan 11,12
+ switchport mode trunk
  duplex auto
 !
 interface Ethernet0/3
@@ -120,9 +121,11 @@ interface Vlan13
 !
 router ospf 1
  router-id 8.8.8.8
+ passive-interface default
+ no passive-interface Ethernet1/0
+ no passive-interface Ethernet1/1
  network 192.168.8.0 0.0.0.255 area 10
  network 192.168.9.0 0.0.0.255 area 10
- network 192.168.10.0 0.0.0.255 area 10
  network 192.168.11.0 0.0.0.255 area 10
  network 192.168.12.0 0.0.0.255 area 10
  network 192.168.13.0 0.0.0.255 area 10
