@@ -1,6 +1,6 @@
 
 !
-! Last configuration change at 21:55:45 UTC Mon Jul 24 2023
+! Last configuration change at 22:52:43 UTC Wed Jul 26 2023
 !
 version 15.5
 service timestamps debug datetime msec
@@ -111,6 +111,11 @@ interface Ethernet1/3
 !
 router ospf 1
  router-id 2.2.2.2
+ passive-interface default
+ no passive-interface Ethernet0/0
+ no passive-interface Ethernet0/1
+ no passive-interface Ethernet0/3
+ no passive-interface Ethernet1/0
  network 192.168.1.0 0.0.0.255 area 102
  network 192.168.2.0 0.0.0.255 area 0
  network 192.168.5.0 0.0.0.255 area 0
