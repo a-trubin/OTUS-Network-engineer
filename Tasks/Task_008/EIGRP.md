@@ -149,18 +149,22 @@ router eigrp SP
 ## Проверка соседства и таблицы маршрутизации:
 
 R18:
+
 ![image](https://github.com/a-trubin/OTUS-Network-engineer/assets/130133180/a92da248-7bb2-4a98-874a-ee0e06229bd2)
 ![image](https://github.com/a-trubin/OTUS-Network-engineer/assets/130133180/768966bc-6560-4736-8d48-42dc37c3266d)
 
 R17:
+
 ![image](https://github.com/a-trubin/OTUS-Network-engineer/assets/130133180/54353576-63eb-4649-9f38-91695307a91b)
 ![image](https://github.com/a-trubin/OTUS-Network-engineer/assets/130133180/591289f1-786b-410a-ad5e-bb41c032f0fd)
 
 R16:
+
 ![image](https://github.com/a-trubin/OTUS-Network-engineer/assets/130133180/11f61cc5-ff0d-4282-b79e-dc3bc3158dfd)
 ![image](https://github.com/a-trubin/OTUS-Network-engineer/assets/130133180/5900d811-30af-4a46-a1e2-088636d21188)
 
 R32:
+
 ![image](https://github.com/a-trubin/OTUS-Network-engineer/assets/130133180/52e3a362-c78a-4ae5-afd0-621fdd8f8298)
 ![image](https://github.com/a-trubin/OTUS-Network-engineer/assets/130133180/d6306ddd-c9a9-4eec-ae3b-d46ade182603)
 
