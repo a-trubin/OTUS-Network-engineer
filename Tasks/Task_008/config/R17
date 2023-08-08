@@ -1,0 +1,185 @@
+
+!
+! Last configuration change at 20:52:54 UTC Tue Aug 8 2023
+!
+version 15.5
+service timestamps debug datetime msec
+service timestamps log datetime msec
+no service password-encryption
+!
+hostname R17
+!
+boot-start-marker
+boot-end-marker
+!
+!
+!
+no aaa new-model
+!
+!
+!
+bsd-client server url https://cloudsso.cisco.com/as/token.oauth2
+mmi polling-interval 60
+no mmi auto-configure
+no mmi pvc
+mmi snmp-timeout 180
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+
+
+!
+!
+!
+!
+no ip domain lookup
+ip cef
+no ipv6 cef
+!
+multilink bundle-name authenticated
+!
+!
+!
+!
+!
+!
+!
+cts logging verbose
+!
+!
+!
+redundancy
+!
+!
+! 
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+interface Ethernet0/0
+ no shutdown
+ ip address 10.101.0.17 255.255.255.0
+!
+interface Ethernet0/1
+ no shutdown
+ no ip address
+!
+interface Ethernet0/1.21
+ no shutdown
+ encapsulation dot1Q 21
+ ip address 10.101.21.17 255.255.255.0
+ standby 21 ip 10.101.21.100
+ standby 21 priority 110
+ standby 21 preempt
+!
+interface Ethernet0/1.23
+ no shutdown
+ encapsulation dot1Q 23
+ ip address 10.101.23.17 255.255.255.0
+ standby 23 ip 10.101.23.100
+ standby 23 priority 110
+ standby 23 preempt
+!
+interface Ethernet0/2
+ no shutdown
+ no ip address
+!
+interface Ethernet0/2.22
+ no shutdown
+ encapsulation dot1Q 22
+ ip address 10.101.22.17 255.255.255.0
+ standby 22 ip 10.101.22.100
+ standby 22 priority 95
+ standby 22 preempt
+!
+interface Ethernet0/3
+ no shutdown
+ no ip address
+ shutdown
+!
+!
+router eigrp SP
+ !
+ address-family ipv4 unicast autonomous-system 2042
+  !
+  af-interface Ethernet0/1
+   passive-interface
+  exit-af-interface
+  !
+  af-interface Ethernet0/2
+   passive-interface
+  exit-af-interface
+  !
+  af-interface Ethernet0/3
+   passive-interface
+  exit-af-interface
+  !
+  af-interface Ethernet0/0
+   summary-address 10.101.0.0 255.255.224.0
+   authentication mode hmac-sha-256 otus
+  exit-af-interface
+  !
+  af-interface Ethernet0/1.23
+   passive-interface
+  exit-af-interface
+  !
+  af-interface Ethernet0/1.21
+   passive-interface
+  exit-af-interface
+  !
+  af-interface Ethernet0/2.22
+   passive-interface
+  exit-af-interface
+  !
+  topology base
+  exit-af-topology
+  network 10.0.0.0
+  eigrp router-id 2.2.2.2
+ exit-address-family
+!
+ip forward-protocol nd
+!
+!
+no ip http server
+no ip http secure-server
+ip route 0.0.0.0 0.0.0.0 10.101.0.18
+!
+!
+!
+!
+control-plane
+!
+!
+!
+!
+!
+!
+!
+!
+line con 0
+ logging synchronous
+line aux 0
+line vty 0 4
+ login
+ transport input none
+!
+!
+end
