@@ -169,5 +169,102 @@ R32:
 ![image](https://github.com/a-trubin/OTUS-Network-engineer/assets/130133180/d6306ddd-c9a9-4eec-ae3b-d46ade182603)
 
 
+# Настройка IPv6
+
+![image](https://github.com/a-trubin/OTUS-Network-engineer/assets/130133180/62069d0c-8090-4e8d-b3e0-55324019bfd7)
+
+R18:
+```
+router eigrp SP
+ address-family ipv6 unicast autonomous-system 2042
+  
+  af-interface Ethernet0/2
+   authentication mode hmac-sha-256 otus
+  exit-af-interface
+  
+  af-interface Ethernet0/3
+   authentication mode hmac-sha-256 otus
+  exit-af-interface
+  
+  af-interface Ethernet0/1
+   passive-interface
+  exit-af-interface
+  
+  af-interface Ethernet0/0
+   passive-interface
+  exit-af-interface
+  
+  topology base
+  exit-af-topology
+  eigrp router-id 1.1.1.1
+ exit-address-family
+```
+R17:
+```
+router eigrp SP
+address-family ipv6 unicast autonomous-system 2042
+  
+  af-interface Ethernet0/0
+   summary-address 2001:DB8:CAFE::/62
+   authentication mode hmac-sha-256 otus
+  exit-af-interface
+  
+  topology base
+  exit-af-topology
+  eigrp router-id 2.2.2.2
+ exit-address-family
+```
+R16:
+```
+router eigrp SP
+ address-family ipv6 unicast autonomous-system 2042
+  
+  af-interface Ethernet0/0
+   summary-address 2001:DB8:CAFE::/62
+   authentication mode hmac-sha-256 otus
+  exit-af-interface
+  
+  af-interface Ethernet0/1
+   summary-address ::/0
+   authentication mode hmac-sha-256 otus
+  exit-af-interface
+  
+  topology base
+  exit-af-topology
+  eigrp router-id 3.3.3.3
+ exit-address-family
+```
+R32
+```
+router eigrp SP
+address-family ipv6 unicast autonomous-system 2042
+  
+  af-interface Ethernet0/0
+   authentication mode hmac-sha-256 otus
+  exit-af-interface
+  
+  topology base
+  exit-af-topology
+  eigrp router-id 4.4.4.4
+ exit-address-family
+```
+## Проверка соседства и таблицы маршрутизации:
+
+R18:
+
+![image](https://github.com/a-trubin/OTUS-Network-engineer/assets/130133180/aadd7d6b-e1b5-45a3-bfa6-8b0fddc8b74a)
+![image](https://github.com/a-trubin/OTUS-Network-engineer/assets/130133180/cc594f88-8f8d-4100-b2b3-e2b62501c77d)
+
+R17:
+![image](https://github.com/a-trubin/OTUS-Network-engineer/assets/130133180/690639b6-5371-4575-a71e-3b571575e0fe)
+![image](https://github.com/a-trubin/OTUS-Network-engineer/assets/130133180/646539c4-9a09-4de2-8f07-86b77cbd0e36)
+
+R16:
+![image](https://github.com/a-trubin/OTUS-Network-engineer/assets/130133180/039b6fa7-5b3b-4787-870a-3eed9bc56117)
+![image](https://github.com/a-trubin/OTUS-Network-engineer/assets/130133180/34ce6ca3-f1e5-4a2b-91c9-98c66e05461d)
+
+R32:
+![image](https://github.com/a-trubin/OTUS-Network-engineer/assets/130133180/47a452a7-7c91-41ab-8634-84feb8bbd289)
+![image](https://github.com/a-trubin/OTUS-Network-engineer/assets/130133180/9f433f32-29f9-43fd-a0e7-fc5e3a16a8ac)
 
 
