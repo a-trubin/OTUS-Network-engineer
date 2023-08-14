@@ -255,15 +255,18 @@ R18:
 ![image](https://github.com/a-trubin/OTUS-Network-engineer/assets/130133180/aadd7d6b-e1b5-45a3-bfa6-8b0fddc8b74a)
 ![image](https://github.com/a-trubin/OTUS-Network-engineer/assets/130133180/cc594f88-8f8d-4100-b2b3-e2b62501c77d)
 
-R17:
+R17: 
+
 ![image](https://github.com/a-trubin/OTUS-Network-engineer/assets/130133180/690639b6-5371-4575-a71e-3b571575e0fe)
 ![image](https://github.com/a-trubin/OTUS-Network-engineer/assets/130133180/646539c4-9a09-4de2-8f07-86b77cbd0e36)
 
-R16:
+R16:  
+
 ![image](https://github.com/a-trubin/OTUS-Network-engineer/assets/130133180/039b6fa7-5b3b-4787-870a-3eed9bc56117)
 ![image](https://github.com/a-trubin/OTUS-Network-engineer/assets/130133180/34ce6ca3-f1e5-4a2b-91c9-98c66e05461d)
 
-R32:
+R32:  
+
 ![image](https://github.com/a-trubin/OTUS-Network-engineer/assets/130133180/47a452a7-7c91-41ab-8634-84feb8bbd289)
 ![image](https://github.com/a-trubin/OTUS-Network-engineer/assets/130133180/9f433f32-29f9-43fd-a0e7-fc5e3a16a8ac)
 
