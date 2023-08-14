@@ -1,6 +1,6 @@
 
 !
-! Last configuration change at 19:45:54 UTC Tue Aug 8 2023
+! Last configuration change at 21:31:37 UTC Mon Aug 14 2023
 !
 version 15.5
 service timestamps debug datetime msec
@@ -44,7 +44,8 @@ mmi snmp-timeout 180
 !
 no ip domain lookup
 ip cef
-no ipv6 cef
+ipv6 unicast-routing
+ipv6 cef
 !
 multilink bundle-name authenticated
 !
@@ -85,10 +86,14 @@ interface Ethernet0/1
 interface Ethernet0/2
  no shutdown
  ip address 10.101.0.18 255.255.255.0
+ ipv6 address FE80::1 link-local
+ ipv6 address 2001:DB8:CAFE:1::18/64
 !
 interface Ethernet0/3
  no shutdown
  ip address 10.101.1.18 255.255.255.0
+ ipv6 address FE80::1 link-local
+ ipv6 address 2001:DB8:CAFE:2::18/64
 !
 !
 router eigrp SP
@@ -115,6 +120,29 @@ router eigrp SP
   exit-af-topology
   network 10.101.0.0 0.0.0.255
   network 10.101.1.0 0.0.0.255
+  eigrp router-id 1.1.1.1
+ exit-address-family
+ !
+ address-family ipv6 unicast autonomous-system 2042
+  !
+  af-interface Ethernet0/2
+   authentication mode hmac-sha-256 otus
+  exit-af-interface
+  !
+  af-interface Ethernet0/3
+   authentication mode hmac-sha-256 otus
+  exit-af-interface
+  !
+  af-interface Ethernet0/1
+   passive-interface
+  exit-af-interface
+  !
+  af-interface Ethernet0/0
+   passive-interface
+  exit-af-interface
+  !
+  topology base
+  exit-af-topology
   eigrp router-id 1.1.1.1
  exit-address-family
 !
