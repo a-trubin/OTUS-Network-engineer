@@ -1,0 +1,188 @@
+
+!
+! Last configuration change at 22:15:46 UTC Tue Aug 22 2023
+!
+version 15.5
+service timestamps debug datetime msec
+service timestamps log datetime msec
+no service password-encryption
+!
+hostname R18
+!
+boot-start-marker
+boot-end-marker
+!
+!
+!
+no aaa new-model
+!
+!
+!
+bsd-client server url https://cloudsso.cisco.com/as/token.oauth2
+mmi polling-interval 60
+no mmi auto-configure
+no mmi pvc
+mmi snmp-timeout 180
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+
+
+!
+!
+!
+!
+no ip domain lookup
+ip cef
+ipv6 unicast-routing
+ipv6 cef
+!
+multilink bundle-name authenticated
+!
+!
+!
+!
+!
+!
+!
+cts logging verbose
+!
+!
+!
+redundancy
+!
+!
+! 
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+interface Ethernet0/0
+ no shutdown
+ ip address 20.20.10.2 255.255.255.252
+!
+interface Ethernet0/1
+ no shutdown
+ ip address 20.20.20.2 255.255.255.252
+!
+interface Ethernet0/2
+ no shutdown
+ ip address 10.101.0.18 255.255.255.0
+ ipv6 address FE80::1 link-local
+ ipv6 address 2001:DB8:CAFE:1::18/64
+!
+interface Ethernet0/3
+ no shutdown
+ ip address 10.101.1.18 255.255.255.0
+ ipv6 address FE80::1 link-local
+ ipv6 address 2001:DB8:CAFE:2::18/64
+!
+!
+router eigrp SP
+ !
+ address-family ipv4 unicast autonomous-system 2042
+  !
+  af-interface Ethernet0/2
+   authentication mode hmac-sha-256 otus
+  exit-af-interface
+  !
+  af-interface Ethernet0/3
+   authentication mode hmac-sha-256 otus
+  exit-af-interface
+  !
+  af-interface Ethernet0/0
+   passive-interface
+  exit-af-interface
+  !
+  af-interface Ethernet0/1
+   passive-interface
+  exit-af-interface
+  !
+  topology base
+  exit-af-topology
+  network 10.101.0.0 0.0.0.255
+  network 10.101.1.0 0.0.0.255
+  eigrp router-id 1.1.1.1
+ exit-address-family
+ !
+ address-family ipv6 unicast autonomous-system 2042
+  !
+  af-interface Ethernet0/2
+   authentication mode hmac-sha-256 otus
+  exit-af-interface
+  !
+  af-interface Ethernet0/3
+   authentication mode hmac-sha-256 otus
+  exit-af-interface
+  !
+  af-interface Ethernet0/1
+   passive-interface
+  exit-af-interface
+  !
+  af-interface Ethernet0/0
+   passive-interface
+  exit-af-interface
+  !
+  topology base
+  exit-af-topology
+  eigrp router-id 1.1.1.1
+ exit-address-family
+!
+router bgp 2042
+ bgp log-neighbor-changes
+ network 20.20.10.0 mask 255.255.255.252
+ network 20.20.20.0 mask 255.255.255.252
+ neighbor 20.20.10.1 remote-as 520
+ neighbor 20.20.10.1 description Triada
+ neighbor 20.20.10.1 timers 30 90
+ neighbor 20.20.20.1 remote-as 520
+ neighbor 20.20.20.1 description Triada
+ neighbor 20.20.20.1 timers 30 90
+!
+ip forward-protocol nd
+!
+!
+no ip http server
+no ip http secure-server
+ip route 0.0.0.0 0.0.0.0 20.20.10.1
+ip route 0.0.0.0 0.0.0.0 20.20.20.1
+!
+!
+!
+!
+control-plane
+!
+!
+!
+!
+!
+!
+!
+!
+line con 0
+ logging synchronous
+line aux 0
+line vty 0 4
+ login
+ transport input none
+!
+!
+end
