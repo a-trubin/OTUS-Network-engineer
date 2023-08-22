@@ -134,14 +134,29 @@ R22:
 
 ![image](https://github.com/a-trubin/OTUS-Network-engineer/assets/130133180/1eb778d5-345a-4952-99a6-5150d9a517a3)
 
-R21:
+R21:  
+
+![image](https://github.com/a-trubin/OTUS-Network-engineer/assets/130133180/6e34b172-ddc7-4c75-842b-2ef6e4d9aaab)
+
+![image](https://github.com/a-trubin/OTUS-Network-engineer/assets/130133180/3fc58848-cb80-4fb3-be8d-9bace012a523)
+
 R24:
-R26:
+
+![image](https://github.com/a-trubin/OTUS-Network-engineer/assets/130133180/35a2a204-1ae3-435a-aa3d-b4a3f6279a4e)
+
+![image](https://github.com/a-trubin/OTUS-Network-engineer/assets/130133180/308d2e4b-1253-4870-beec-23d88fb1c7f6)
+
 R18:
+
+![image](https://github.com/a-trubin/OTUS-Network-engineer/assets/130133180/65fbd0ac-c1cf-40d6-8e11-26d1cddbeb5b)  
+
+![image](https://github.com/a-trubin/OTUS-Network-engineer/assets/130133180/6baee0ee-2846-4b51-966b-f615ea0098fa)
+
 
 ### Проблема:
 
 R18 отправляет все префиксы в сторону R26, R26 принимает только 1 префикс:  
 ![image](https://github.com/a-trubin/OTUS-Network-engineer/assets/130133180/f1d472aa-48bf-4559-9f0d-03a2379836ed)  
 ![image](https://github.com/a-trubin/OTUS-Network-engineer/assets/130133180/96da45cc-4690-4bcb-a56d-1b8aed1c8dd9)  
+![image](https://github.com/a-trubin/OTUS-Network-engineer/assets/130133180/1d40fe18-c5ab-4031-b581-7a1b8e8c3cd9)
 
