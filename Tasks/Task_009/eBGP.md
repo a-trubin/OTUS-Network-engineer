@@ -114,7 +114,33 @@ router bgp 520
  neighbor 20.20.20.2 description St.P
  neighbor 20.20.20.2 timers 30 90
 ```
+### Проверка конфигурации
+
+R14:  
+
+![image](https://github.com/a-trubin/OTUS-Network-engineer/assets/130133180/4001b9c2-5af9-4dca-b9f0-1008e58138cf)  
+
+![image](https://github.com/a-trubin/OTUS-Network-engineer/assets/130133180/73ca07fd-4dc0-4b1a-81ac-637e388c022c)
+
+R15:
+
+![image](https://github.com/a-trubin/OTUS-Network-engineer/assets/130133180/841ddbd3-36ba-471b-af8f-64d45961ee80)
+
+![image](https://github.com/a-trubin/OTUS-Network-engineer/assets/130133180/0b213b48-28fe-4d61-a421-5e91fb29d676)
+
+R22:
+
+![image](https://github.com/a-trubin/OTUS-Network-engineer/assets/130133180/db5b4fa1-accf-48d1-9be2-09af55fee261)
+
+![image](https://github.com/a-trubin/OTUS-Network-engineer/assets/130133180/1eb778d5-345a-4952-99a6-5150d9a517a3)
+
+R21:
+R24:
+R26:
+R18:
+
 ### Проблема:
+
 R18 отправляет все префиксы в сторону R26, R26 принимает только 1 префикс:  
 ![image](https://github.com/a-trubin/OTUS-Network-engineer/assets/130133180/f1d472aa-48bf-4559-9f0d-03a2379836ed)  
 ![image](https://github.com/a-trubin/OTUS-Network-engineer/assets/130133180/96da45cc-4690-4bcb-a56d-1b8aed1c8dd9)  
