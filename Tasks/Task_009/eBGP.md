@@ -155,7 +155,8 @@ R18:
 
 ### Проблема:
 
-R18 отправляет все префиксы в сторону R26, R26 принимает только 1 префикс:  
+R18 отправляет все префиксы в сторону R26, R26 принимает только 1 префикс: 
+
 ![image](https://github.com/a-trubin/OTUS-Network-engineer/assets/130133180/f1d472aa-48bf-4559-9f0d-03a2379836ed)  
 ![image](https://github.com/a-trubin/OTUS-Network-engineer/assets/130133180/96da45cc-4690-4bcb-a56d-1b8aed1c8dd9)  
 ![image](https://github.com/a-trubin/OTUS-Network-engineer/assets/130133180/1d40fe18-c5ab-4031-b581-7a1b8e8c3cd9)
