@@ -12,4 +12,4 @@
 
 ## Топология  
 
-![Network scheme drawio](https://github.com/a-trubin/OTUS-Network-engineer/assets/130133180/8f918a38-5029-4eb7-94fa-84791af0f12e)
+![image](https://github.com/a-trubin/OTUS-Network-engineer/assets/130133180/33477179-09af-4f81-9d19-45071f8a67da)
