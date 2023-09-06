@@ -16,7 +16,7 @@
 
 ## 1. Настроить iBGP в офисе Москва между маршрутизаторами R14 и R15  
 
-### R14:
+R14:
 ```
 router bgp 1001
  neighbor 192.168.14.15 remote-as 1001
@@ -24,7 +24,7 @@ router bgp 1001
  neighbor 192.168.14.15 timers 30 90
 ```
 
-### R15
+R15
 ```
 router bgp 1001
    neighbor 192.168.14.14 remote-as 1001
@@ -33,7 +33,7 @@ router bgp 1001
 ```
 ## 2. Настроить iBGP в провайдере Триада, с использованием RR  
 
-### R24:
+R24:
 
 ```
 router bgp 520
@@ -48,7 +48,7 @@ router bgp 520
    neighbor 10.100.3.26 route-reflector-client
 ```
 
-### R25:
+R25:
 
 ```
 router bgp 520
@@ -62,7 +62,7 @@ router bgp 520
  neighbor 10.100.4.26 timers 30 90
 ```
 
-### R23:
+R23:
 
 ```
 router bgp 520
@@ -73,7 +73,7 @@ redistribute connected
  neighbor 10.100.2.24 timers 30 90
 ```
 
-### R26:
+R26:
 
 ```
 router bgp 520
@@ -81,4 +81,33 @@ router bgp 520
  neighbor 10.100.3.24 timers 30 90
  neighbor 10.100.4.25 remote-as 520
  neighbor 10.100.4.25 timers 30 90
+```
+## 3. Настройть офис Москва так, чтобы приоритетным провайдером стал Ламас.
+
+Сначала для красоты настроим провайдеры на передачу только дефолтного маршрута:
+
+R22:
+
+```
+ip prefix-list onlydefault seq 10 permit 0.0.0.0/0
+
+route-map onlydefault permit 10
+ match ip address prefix-list onlydefault
+
+router bgp 101
+ neighbor 20.10.10.2 default-originate
+ neighbor 20.10.10.2 route-map onlydefault out
+```
+
+R21:
+
+```
+ip prefix-list onlydefault seq 10 permit 0.0.0.0/0
+
+route-map onlydefault permit 10
+ match ip address prefix-list onlydefault
+
+router bgp 301
+ neighbor 20.10.20.2 default-originate
+ neighbor 20.10.20.2 route-map onlydefault out
 ```
