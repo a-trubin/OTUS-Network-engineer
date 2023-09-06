@@ -98,6 +98,7 @@ router bgp 101
  neighbor 20.10.10.2 default-originate
  neighbor 20.10.10.2 route-map onlydefault out
 ```
+![image](https://github.com/a-trubin/OTUS-Network-engineer/assets/130133180/731e3276-a186-4307-b665-3e1379fb9e66)
 
 R21:
 
@@ -111,3 +112,24 @@ router bgp 301
  neighbor 20.10.20.2 default-originate
  neighbor 20.10.20.2 route-map onlydefault out
 ```
+![image](https://github.com/a-trubin/OTUS-Network-engineer/assets/130133180/a148300f-7097-4675-a690-912b99a8691b)
+
+Далее настроим приоритет с помощью as-path prepend:
+
+R14:
+
+```
+ip prefix-list prior seq 10 permit 0.0.0.0/0
+
+route-map prior permit 10
+ match ip address prefix-list prior
+ set as-path prepend 101
+
+router bgp 1001
+ neighbor 20.10.10.1 route-map prior in
+```
+![image](https://github.com/a-trubin/OTUS-Network-engineer/assets/130133180/ce2898b3-0fcd-4576-9ac6-7f7308d2a4e4)
+
+![image](https://github.com/a-trubin/OTUS-Network-engineer/assets/130133180/62f01150-ca02-4f00-9aa0-4f543444f5c2)
+
+Таким образом любой трафик пойдет через провайдера Ламас.
