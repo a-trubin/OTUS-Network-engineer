@@ -13,7 +13,7 @@
 
 ![image](https://github.com/a-trubin/OTUS-Network-engineer/assets/130133180/33477179-09af-4f81-9d19-45071f8a67da)
 
-## Настроить фильтрацию в офисе Москва так, чтобы не появилось транзитного трафика
+## 1. Настроить фильтрацию в офисе Москва так, чтобы не появилось транзитного трафика
 
 R14
 ```
@@ -27,4 +27,16 @@ R15
 ip as-path access-list 1 permit ^$
   router bgp 1001
  neighbor 20.10.20.1 filter-list 1 out
+```
+![image](https://github.com/a-trubin/OTUS-Network-engineer/assets/130133180/34634d1d-99f4-473d-8c0e-9470177cb2c9)
+
+![image](https://github.com/a-trubin/OTUS-Network-engineer/assets/130133180/524853d7-467d-42ff-9cc2-c4b0eb569222)
+
+## 2. Настроить фильтрацию в офисе С.-Петербург так, чтобы не появилось транзитного трафика(Prefix-list).
+
+R18:
+```
+ip prefix-list triada seq 5 permit 10.101.0.0/19
+router bgp 2042
+  neighbor 20.20.10.1 prefix-list triada out
 ```
