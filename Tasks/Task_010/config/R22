@@ -1,6 +1,6 @@
 
 !
-! Last configuration change at 19:03:11 UTC Wed Sep 6 2023
+! Last configuration change at 23:01:01 UTC Sat Sep 9 2023
 !
 version 15.5
 service timestamps debug datetime msec
@@ -115,10 +115,7 @@ no ip http server
 no ip http secure-server
 !
 !
-ip prefix-list onlydefault seq 10 permit 0.0.0.0/0
-!
-route-map onlydefault permit 10
- match ip address prefix-list onlydefault
+route-map onludefault deny 10
 !
 !
 !
