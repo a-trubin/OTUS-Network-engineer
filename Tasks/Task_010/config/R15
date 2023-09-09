@@ -1,5 +1,7 @@
 
 !
+! Last configuration change at 22:26:03 UTC Sat Sep 9 2023
+!
 version 15.5
 service timestamps debug datetime msec
 service timestamps log datetime msec
@@ -72,6 +74,10 @@ redundancy
 !
 !
 !
+interface Loopback0
+ no shutdown
+ ip address 10.1.1.2 255.255.255.255
+!
 interface Ethernet0/0
  no shutdown
  ip address 192.168.5.15 255.255.255.0
@@ -109,6 +115,7 @@ interface Ethernet1/3
 !
 router ospf 1
  router-id 2.2.2.2
+ redistribute connected subnets
  passive-interface default
  no passive-interface Ethernet0/0
  no passive-interface Ethernet0/1
@@ -123,15 +130,17 @@ router ospf 1
 router bgp 1001
  bgp log-neighbor-changes
  aggregate-address 192.168.0.0 255.255.240.0 summary-only
+ neighbor 10.1.1.1 remote-as 1001
+ neighbor 10.1.1.1 update-source Loopback0
+ neighbor 10.1.1.1 timers 30 90
  neighbor 20.10.20.1 remote-as 301
  neighbor 20.10.20.1 description Lamas
  neighbor 20.10.20.1 timers 30 90
- neighbor 192.168.14.14 remote-as 1001
- neighbor 192.168.14.14 description R14
- neighbor 192.168.14.14 timers 30 90
+ neighbor 20.10.20.1 filter-list 1 out
 !
 ip forward-protocol nd
 !
+ip as-path access-list 1 permit ^$
 !
 no ip http server
 no ip http secure-server
