@@ -103,10 +103,7 @@ router bgp 520
 R22:
 
 ```
-ip prefix-list onlydefault seq 10 permit 0.0.0.0/0
-
-route-map onlydefault permit 10
- match ip address prefix-list onlydefault
+route-map onlydefault deny 10
 
 router bgp 101
  neighbor 20.10.10.2 default-originate
@@ -117,10 +114,7 @@ router bgp 101
 R21:
 
 ```
-ip prefix-list onlydefault seq 10 permit 0.0.0.0/0
-
-route-map onlydefault permit 10
- match ip address prefix-list onlydefault
+route-map onlydefault deny 10
 
 router bgp 301
  neighbor 20.10.20.2 default-originate
