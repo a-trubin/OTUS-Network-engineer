@@ -18,18 +18,32 @@
 
 R14:
 ```
+interface Loopback0
+ no shutdown
+ ip address 10.1.1.1 255.255.255.255
+
+router ospf 1
+ redistribute connected subnets
+
 router bgp 1001
- neighbor 192.168.14.15 remote-as 1001
- neighbor 192.168.14.15 description R15
- neighbor 192.168.14.15 timers 30 90
+ neighbor 10.1.1.2 remote-as 1001
+ neighbor 10.1.1.2 update-source Loopback0
+ neighbor 10.1.1.2 timers 30 90
 ```
 
 R15
 ```
+interface Loopback0
+ no shutdown
+ ip address 10.1.1.2 255.255.255.255
+
+router ospf 1
+ redistribute connected subnets
+
 router bgp 1001
-   neighbor 192.168.14.14 remote-as 1001
-   neighbor 192.168.14.14 description R14
-   neighbor 192.168.14.14 timers 30 90
+ neighbor 10.1.1.1 remote-as 1001
+ neighbor 10.1.1.1 update-source Loopback0
+ neighbor 10.1.1.1 timers 30 90
 ```
 ## 2. Настроить iBGP в провайдере Триада, с использованием RR  
 
