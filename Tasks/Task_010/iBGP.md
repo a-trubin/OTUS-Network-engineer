@@ -133,10 +133,7 @@ router bgp 301
 R14:
 
 ```
-ip prefix-list prior seq 10 permit 0.0.0.0/0
-
 route-map prior permit 10
- match ip address prefix-list prior
  set as-path prepend 101
 
 router bgp 1001
