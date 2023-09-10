@@ -50,52 +50,69 @@ router bgp 1001
 R24:
 
 ```
+interface Loopback0
+ no shutdown
+ ip address 10.2.1.1 255.255.255.255
+ ip router isis 1
+
 router bgp 520
-   neighbor 10.100.1.25 remote-as 520
-   neighbor 10.100.1.25 timers 30 90
-   neighbor 10.100.1.25 route-reflector-client
-   neighbor 10.100.2.23 remote-as 520
-   neighbor 10.100.2.23 timers 30 90
-   neighbor 10.100.2.23 route-reflector-client
-   neighbor 10.100.3.26 remote-as 520
-   neighbor 10.100.3.26 timers 30 90
-   neighbor 10.100.3.26 route-reflector-client
+ neighbor iBGP peer-group
+ neighbor iBGP remote-as 520
+ neighbor iBGP update-source Loopback0
+ neighbor iBGP timers 30 90
+ neighbor iBGP route-reflector-client
+ neighbor 10.2.1.2 peer-group iBGP
+ neighbor 10.2.1.3 peer-group iBGP
+ neighbor 10.2.1.4 peer-group iBGP
 ```
 
 R25:
 
 ```
+interface Loopback0
+ no shutdown
+ ip address 10.2.1.3 255.255.255.255
+ ip router isis 1
+
 router bgp 520
  bgp log-neighbor-changes
  redistribute connected
- neighbor 10.100.1.23 remote-as 520
- neighbor 10.100.1.23 timers 30 90
- neighbor 10.100.2.24 remote-as 520
- neighbor 10.100.2.24 timers 30 90
- neighbor 10.100.4.26 remote-as 520
- neighbor 10.100.4.26 timers 30 90
+ redistribute static
+ neighbor 10.2.1.1 remote-as 520
+ neighbor 10.2.1.1 update-source Loopback0
+ neighbor 10.2.1.1 timers 30 90
 ```
 
 R23:
 
 ```
+interface Loopback0
+ no shutdown
+ ip address 10.2.1.2 255.255.255.255
+ ip router isis 1
+
 router bgp 520
-redistribute connected
- neighbor 10.100.1.25 remote-as 520
- neighbor 10.100.1.25 timers 30 90
- neighbor 10.100.2.24 remote-as 520
- neighbor 10.100.2.24 timers 30 90
+ neighbor 10.2.1.1 remote-as 520
+ neighbor 10.2.1.1 update-source Loopback0
+ neighbor 10.2.1.1 timers 30 90
 ```
 
 R26:
 
 ```
+interface Loopback0
+ no shutdown
+ ip address 10.2.1.4 255.255.255.255
+ ip router isis 1
+
 router bgp 520
- neighbor 10.100.3.24 remote-as 520
- neighbor 10.100.3.24 timers 30 90
- neighbor 10.100.4.25 remote-as 520
- neighbor 10.100.4.25 timers 30 90
+ neighbor 10.2.1.1 remote-as 520
+ neighbor 10.2.1.1 update-source Loopback0
+ neighbor 10.2.1.1 timers 30 90
 ```
+![image](https://github.com/a-trubin/OTUS-Network-engineer/assets/130133180/b6f4af94-97c7-4764-8daf-02b9aabe4d13)
+
+
 ## 3. Настройть офис Москва так, чтобы приоритетным провайдером стал Ламас.
 
 Сначала для красоты настроим провайдеры на передачу только дефолтного маршрута:
