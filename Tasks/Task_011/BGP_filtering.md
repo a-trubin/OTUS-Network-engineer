@@ -49,6 +49,8 @@ router bgp 2042
 R21:
 ```
 ip prefix-list onlydefault seq 20 permit 10.101.0.0/19
+route-map onlydefault permit 10
+ match ip address prefix-list onlydefault
 
 router bgp 301
  neighbor 20.10.20.2 route-map onlydefault out
