@@ -1,6 +1,6 @@
 
 !
-! Last configuration change at 22:22:39 UTC Wed Sep 6 2023
+! Last configuration change at 00:19:14 UTC Sun Sep 10 2023
 !
 version 15.5
 service timestamps debug datetime msec
@@ -74,6 +74,11 @@ redundancy
 !
 !
 !
+interface Loopback0
+ no shutdown
+ ip address 10.2.1.4 255.255.255.255
+ ip router isis 1
+!
 interface Ethernet0/0
  no shutdown
  ip address 10.100.3.26 255.255.255.0
@@ -123,10 +128,9 @@ router bgp 520
  network 20.20.20.0 mask 255.255.255.252
  redistribute connected
  redistribute static
- neighbor 10.100.3.24 remote-as 520
- neighbor 10.100.3.24 timers 30 90
- neighbor 10.100.4.25 remote-as 520
- neighbor 10.100.4.25 timers 30 90
+ neighbor 10.2.1.1 remote-as 520
+ neighbor 10.2.1.1 update-source Loopback0
+ neighbor 10.2.1.1 timers 30 90
  neighbor 20.20.20.2 remote-as 2042
  neighbor 20.20.20.2 description St.P
  neighbor 20.20.20.2 timers 30 90
@@ -143,10 +147,7 @@ no ip http secure-server
 ip route 172.16.0.0 255.255.192.0 20.30.10.2
 !
 !
-ip prefix-list onlydefault seq 10 permit 0.0.0.0/0
-!
-route-map onlydefault permit 10
- match ip address prefix-list onlydefault
+route-map onlydefault deny 10
 !
 !
 !
