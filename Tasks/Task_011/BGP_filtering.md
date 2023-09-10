@@ -48,7 +48,6 @@ router bgp 2042
 
 R21:
 ```
-ip prefix-list onlydefault seq 10 permit 0.0.0.0/0
 ip prefix-list onlydefault seq 20 permit 10.101.0.0/19
 
 router bgp 301
