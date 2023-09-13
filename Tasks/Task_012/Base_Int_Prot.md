@@ -11,3 +11,24 @@
   5*. Настроить статический NAT(PAT) для офиса Чокурдах.  
 6. Настроите для IPv4 DHCP сервер в офисе Москва на маршрутизаторах R12 и R13. VPC1 и VPC7 должны получать сетевые настройки по DHCP.
 7. Настроите NTP сервер на R12 и R13. Все устройства в офисе Москва должны синхронизировать время с R12 и R13.
+
+## 1. Настроить NAT(PAT) на R14 и R15. Трансляция должна осуществляться в адрес автономной системы AS1001.  
+
+R14:
+```
+R14(config)#int e0/2
+R14(config-if)#ip nat outside
+R14(config)#int range  e0/0,e0/1,e0/3,e1/0
+R14(config-if-range)#ip nat inside
+
+R14(config)#access-list 1 permit 192.168.0.0 0.0.15.255
+R14(config)#ip nat inside source list 1 interface e0/2 overload
+```
+
+Аналогичным образом настраивается R15.
+
+```
+R15#show ip nat translations 
+Pro Inside global      Inside local       Outside local      Outside global
+icmp 20.10.20.2:4      192.168.5.13:4     20.30.10.1:4       20.30.10.1:4
+```
