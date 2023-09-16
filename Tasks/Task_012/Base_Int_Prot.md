@@ -62,13 +62,32 @@ Pro Inside global      Inside local       Outside local      Outside global
 icmp 20.20.20.9:5      10.101.0.17:5      20.10.40.1:5       20.10.40.1:5
 ```
 
+### Настроить статический NAT для R20.
 
+На R15 создаем loopback interface с адресом 20.10.20.5.
 
+```
+R15(config)#int lo2
+R15(config-if)#ip address 20.10.20.5 255.255.255.255  
+```
+Затем прописываем статический NAT для адреса R20.
+```
+R15(config)#ip nat inside source static 192.168.1.20 20.10.20.5
+```
+Проверка
+```
+R15(config)#do show ip nat translations 
+Pro Inside global      Inside local       Outside local      Outside global
+--- 20.10.20.5         192.168.1.20       ---                ---
+```
 
+Чтобы данный адрес был доступен, на R15 добавил маршрут в Null0 и анонсируем в BGP.
 
+```
+R15(config)#ip route 20.10.20.5 255.255.255.255 Null0
 
-
-
-
+R15(config)#router bgp 1001
+R15(config-router)#redistribute connected 
+```
 
 
