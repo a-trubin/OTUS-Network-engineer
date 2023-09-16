@@ -89,5 +89,30 @@ R15(config)#ip route 20.10.20.5 255.255.255.255 Null0
 R15(config)#router bgp 1001
 R15(config-router)#redistribute connected 
 ```
+### Настроить NAT так, чтобы R19 был доступен с любого узла для удаленного управления.
 
+Для начала настроим R19.
 
+```
+R19(config)#username otus privilege 15 secret otus
+R19(config)#line vty 0 4
+R19(config-line)#login local
+R19(config-line)#transport input telnet 
+```
+На самом деле R19 доступен с любого устройства, т.к. распространены все маршруты. Но в задании написано настроить NAT.
+Поэтому на R15 создаем еще один loopback и настраиваем статический NAT.
+
+```
+R15(config)#int lo3
+R15(config-if)#ip address 20.10.20.7 255.255.255.255
+R15(config)#ip nat inside source static 192.168.0.19 20.10.20.7
+R15(config)#ip route 20.10.20.7 255.255.255.255 Null0
+```
+Проверка:
+
+```
+R27#telnet 20.10.20.7
+Trying 20.10.20.7 ... Open
+
+User Access Verification
+```
