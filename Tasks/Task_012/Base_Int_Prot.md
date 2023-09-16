@@ -117,3 +117,30 @@ Trying 20.10.20.7 ... Open
 User Access Verification
 ```
  ### 5. Настроить статический NAT(PAT) для офиса Чокурдах.
+
+В данном офисе настроен IP SLA. Менять конфигурацию не будем. Произведем следующие настройки:
+
+R28
+
+```
+access-list 110 permit ip 172.16.0.0 0.0.63.255 any
+
+route-map NAT2 permit 10
+ match ip address 110
+ match interface Ethernet0/3
+
+route-map NAT1 permit 10
+ match ip address 110
+ match interface Ethernet0/1
+
+ip nat inside source route-map NAT1 interface Ethernet0/1 overload
+ip nat inside source route-map NAT2 interface Ethernet0/3 overload
+```
+Проверка:
+
+```
+R28(config)#do show ip nat translations 
+Pro Inside global      Inside local       Outside local      Outside global
+udp 20.30.20.2:7585    172.16.31.10:7585  192.168.5.15:7586  192.168.5.15:7586
+udp 20.30.20.2:37168   172.16.32.10:37168 20.10.40.1:37169   20.10.40.1:37169
+```
