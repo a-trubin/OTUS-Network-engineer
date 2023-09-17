@@ -146,3 +146,91 @@ udp 20.30.20.2:37168   172.16.32.10:37168 20.10.40.1:37169   20.10.40.1:37169
 ```
 ### 6. Настроить для IPv4 DHCP сервер в офисе Москва на маршрутизаторах R12 и R13. VPC1 и VPC7 должны получать сетевые настройки по DHCP.
 
+В данном случае будет  производиться настройка SW4 и SW5 как L3 коммутаторов.
+
+SW4:
+
+```
+ip dhcp excluded-address 192.168.11.1 192.168.11.100
+ip dhcp excluded-address 192.168.12.1 192.168.12.100
+ip dhcp excluded-address 192.168.13.1 192.168.13.100
+
+ip dhcp pool Vlan11
+ network 192.168.11.0 255.255.255.0
+ default-router 192.168.11.100 
+!         
+ip dhcp pool Vlan12
+ network 192.168.12.0 255.255.255.0
+ default-router 192.168.12.100 
+```
+
+SW5 настроен аналогично.
+
+Для VLAN3 не настривается, т.к. это vlan управления.
+
+Проверка:
+
+VPC1
+```
+VPCS> ip dhcp
+DDORA IP 192.168.11.102/24 GW 192.168.11.100
+
+VPCS> show ip
+
+NAME        : VPCS[1]
+IP/MASK     : 192.168.11.102/24
+GATEWAY     : 192.168.11.100
+DNS         : 
+DHCP SERVER : 192.168.11.4
+DHCP LEASE  : 85961, 86400/43200/75600
+MAC         : 00:50:79:66:68:39
+LPORT       : 20000
+RHOST:PORT  : 127.0.0.1:30000
+MTU         : 1500
+```
+
+VPC2:
+```
+VPCS> ip dhcp
+DDORA IP 192.168.12.101/24 GW 192.168.12.100
+
+VPCS> show ip
+
+NAME        : VPCS[1]
+IP/MASK     : 192.168.12.101/24
+GATEWAY     : 192.168.12.100
+DNS         : 
+DHCP SERVER : 192.168.12.4
+DHCP LEASE  : 85979, 86400/43200/75600
+MAC         : 00:50:79:66:68:3a
+LPORT       : 20000
+RHOST:PORT  : 127.0.0.1:30000
+MTU         : 1500
+```
+
+### 7. Настроить NTP сервер на R12 и R13. Все устройства в офисе Москва должны синхронизировать время с R12 и R13.
+
+На роутерах настраиваем время.
+
+R12:
+
+```
+R12-CR#clock set 00:00:00 17 sep 2023
+R12-CR(config)#clock timezone MSK 3
+R12-CR(config)#ntp master 2
+```
+Аналогично R13.
+
+Настраиваем клиенты (на примере R14):
+
+```
+R14(config)#ntp server 192.168.2.12
+R14(config)#ntp server 192.168.5.13
+```
+Проверка:
+```
+  address         ref clock       st   when   poll reach  delay  offset   disp
+*~192.168.2.12    127.127.1.1      2      0     64   377  0.000 -372027  2.918
+x~192.168.5.13    127.127.1.1      2      0     64   377  0.000 -372185  2.910
+ * sys.peer, # selected, + candidate, - outlyer, x falseticker, ~ configured
+```
