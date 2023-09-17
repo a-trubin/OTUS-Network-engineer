@@ -1,0 +1,216 @@
+
+!
+! Last configuration change at 16:52:26 UTC Sun Sep 17 2023
+!
+version 15.5
+service timestamps debug datetime msec
+service timestamps log datetime msec
+no service password-encryption
+!
+hostname R15
+!
+boot-start-marker
+boot-end-marker
+!
+!
+!
+no aaa new-model
+!
+!
+!
+bsd-client server url https://cloudsso.cisco.com/as/token.oauth2
+mmi polling-interval 60
+no mmi auto-configure
+no mmi pvc
+mmi snmp-timeout 180
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+
+
+!
+!
+!
+!
+no ip domain lookup
+ip cef
+no ipv6 cef
+!
+multilink bundle-name authenticated
+!
+!
+!
+!
+!
+!
+!
+cts logging verbose
+!
+!
+!
+redundancy
+!
+!
+! 
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+interface Loopback0
+ no shutdown
+ ip address 10.1.1.2 255.255.255.255
+!
+interface Loopback1
+ no shutdown
+ no ip address
+!
+interface Loopback2
+ no shutdown
+ ip address 20.10.20.5 255.255.255.255
+!
+interface Loopback3
+ no shutdown
+ ip address 20.10.20.7 255.255.255.255
+!
+interface Tunnel0
+ no shutdown
+ ip address 10.0.0.1 255.255.255.252
+ ip mtu 1400
+ ip tcp adjust-mss 1360
+ tunnel source 20.10.20.2
+ tunnel destination 20.20.10.2
+!
+interface Tunnel100
+ no shutdown
+ ip address 10.64.0.1 255.255.255.0
+ no ip redirects
+ ip mtu 1400
+ ip nhrp map multicast dynamic
+ ip nhrp network-id 1
+ ip tcp adjust-mss 1360
+ tunnel source 20.10.20.2
+ tunnel mode gre multipoint
+!
+interface Ethernet0/0
+ no shutdown
+ ip address 192.168.5.15 255.255.255.0
+ ip nat inside
+ ip virtual-reassembly in
+!
+interface Ethernet0/1
+ no shutdown
+ ip address 192.168.2.15 255.255.255.0
+ ip nat inside
+ ip virtual-reassembly in
+!
+interface Ethernet0/2
+ no shutdown
+ ip address 20.10.20.2 255.255.255.252
+ ip nat outside
+ ip virtual-reassembly in
+!
+interface Ethernet0/3
+ no shutdown
+ ip address 192.168.1.15 255.255.255.0
+ ip nat inside
+ ip virtual-reassembly in
+!
+interface Ethernet1/0
+ no shutdown
+ ip address 192.168.14.15 255.255.255.0
+ ip nat inside
+ ip virtual-reassembly in
+!
+interface Ethernet1/1
+ no shutdown
+ no ip address
+ shutdown
+!
+interface Ethernet1/2
+ no shutdown
+ no ip address
+ shutdown
+!
+interface Ethernet1/3
+ no shutdown
+ no ip address
+ shutdown
+!
+router ospf 1
+ router-id 2.2.2.2
+ redistribute connected subnets
+ passive-interface default
+ no passive-interface Ethernet0/0
+ no passive-interface Ethernet0/1
+ no passive-interface Ethernet0/3
+ no passive-interface Ethernet1/0
+ network 192.168.1.0 0.0.0.255 area 102
+ network 192.168.2.0 0.0.0.255 area 0
+ network 192.168.5.0 0.0.0.255 area 0
+ network 192.168.14.0 0.0.0.255 area 0
+ default-information originate
+!
+router bgp 1001
+ bgp log-neighbor-changes
+ aggregate-address 192.168.0.0 255.255.240.0 summary-only
+ redistribute connected
+ neighbor 10.1.1.1 remote-as 1001
+ neighbor 10.1.1.1 update-source Loopback0
+ neighbor 10.1.1.1 timers 30 90
+ neighbor 20.10.20.1 remote-as 301
+ neighbor 20.10.20.1 description Lamas
+ neighbor 20.10.20.1 timers 30 90
+ neighbor 20.10.20.1 filter-list 1 out
+!
+ip forward-protocol nd
+!
+ip as-path access-list 1 permit ^$
+!
+no ip http server
+no ip http secure-server
+ip nat inside source list 1 interface Ethernet0/2 overload
+ip nat inside source static 192.168.1.20 20.10.20.5
+ip nat inside source static 192.168.0.19 20.10.20.7
+ip route 20.10.20.5 255.255.255.255 Null0
+ip route 20.10.20.7 255.255.255.255 Null0
+!
+!
+!
+access-list 1 permit 192.168.0.0 0.0.15.255
+!
+control-plane
+!
+!
+!
+!
+!
+!
+!
+!
+line con 0
+ logging synchronous
+line aux 0
+line vty 0 4
+ login
+ transport input none
+!
+!
+end
