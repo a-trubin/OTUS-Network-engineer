@@ -8,6 +8,8 @@
 
 ### 1. Настроить GRE между офисами Москва и С.-Петербург
 
+Построю два туннеля.
+
 R18:
 ```
 R18(config)#interface Tunnel 0
@@ -78,4 +80,54 @@ Type escape sequence to abort.
 Sending 5, 100-byte ICMP Echos to 10.0.0.5, timeout is 2 seconds:
 !!!!!
 Success rate is 100 percent (5/5), round-trip min/avg/max = 1/1/1 ms
+```
+
+### 2. Настроить DMVPN между офисами Москва и Чокурдах, Лабытнанги
+
+Пусть офис Москва будет выступать в роли хаба. 
+
+R15:
+
+```
+interface Tunnel100
+ ip address 10.64.0.1 255.255.255.0
+ no ip redirects
+ ip mtu 1400
+ ip nhrp map multicast dynamic
+ ip nhrp network-id 1
+ ip tcp adjust-mss 1360
+ tunnel source 20.10.20.2
+ tunnel mode gre multipoint
+```
+
+R27:
+
+```
+interface Tunnel100
+ ip address 10.64.0.2 255.255.255.252
+ no ip redirects
+ ip mtu 1400
+ ip nhrp map 10.64.0.1 20.10.20.2
+ ip nhrp map multicast 20.10.20.2
+ ip nhrp network-id 1
+ ip nhrp nhs 10.64.0.1
+ ip tcp adjust-mss 1360
+ tunnel source 20.30.30.2
+ tunnel mode gre multipoint
+```
+
+R28:
+
+```
+interface Tunnel100
+ ip address 10.64.0.3 255.255.255.252
+ no ip redirects
+ ip mtu 1400
+ ip nhrp map 10.64.0.1 20.10.20.2
+ ip nhrp map multicast 20.10.20.2
+ ip nhrp network-id 1
+ ip nhrp nhs 10.64.0.1
+ ip tcp adjust-mss 1360
+ tunnel source 20.30.10.2
+ tunnel mode gre multipoint
 ```
