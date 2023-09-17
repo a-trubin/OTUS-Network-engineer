@@ -27,6 +27,8 @@ R14(config)#ip nat inside source list 1 interface e0/2 overload
 
 Аналогичным образом настраивается R15.
 
+Проверка:
+
 ```
 R15#show ip nat translations 
 Pro Inside global      Inside local       Outside local      Outside global
