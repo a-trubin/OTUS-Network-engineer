@@ -76,7 +76,7 @@ R15(config-if)#ip address 20.10.20.5 255.255.255.255
 ```
 R15(config)#ip nat inside source static 192.168.1.20 20.10.20.5
 ```
-Проверка
+Проверка:
 ```
 R15(config)#do show ip nat translations 
 Pro Inside global      Inside local       Outside local      Outside global
@@ -122,7 +122,7 @@ User Access Verification
 
 В данном офисе настроен IP SLA. Менять конфигурацию не будем. Произведем следующие настройки:
 
-R28
+R28:
 
 ```
 access-list 110 permit ip 172.16.0.0 0.0.63.255 any
@@ -172,7 +172,7 @@ SW5 настроен аналогично.
 
 Проверка:
 
-VPC1
+VPC1:
 ```
 VPCS> ip dhcp
 DDORA IP 192.168.11.102/24 GW 192.168.11.100
