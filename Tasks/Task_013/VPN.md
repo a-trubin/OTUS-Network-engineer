@@ -8,7 +8,8 @@
 
 ### 1. Настроить GRE между офисами Москва и С.-Петербург
 
-Построю два туннеля.
+![image](https://github.com/a-trubin/OTUS-Network-engineer/assets/130133180/97b76bd0-319c-478e-b2ba-4d24458fe4b2)
+
 
 R18:
 ```
@@ -84,6 +85,9 @@ Success rate is 100 percent (5/5), round-trip min/avg/max = 1/1/1 ms
 
 ### 2. Настроить DMVPN между офисами Москва и Чокурдах, Лабытнанги
 
+![image](https://github.com/a-trubin/OTUS-Network-engineer/assets/130133180/3a43c0af-8773-4a32-8130-01e28f784418)
+
+
 Пусть офис Москва будет выступать в роли хаба. 
 
 R15:
@@ -130,4 +134,36 @@ interface Tunnel100
  ip tcp adjust-mss 1360
  tunnel source 20.30.10.2
  tunnel mode gre multipoint
+```
+Проверка:
+
+```
+R15#show dmvpn 
+Legend: Attrb --> S - Static, D - Dynamic, I - Incomplete
+N - NATed, L - Local, X - No Socket
+T1 - Route Installed, T2 - Nexthop-override
+C - CTS Capable
+# Ent --> Number of NHRP entries with same NBMA peer
+NHS Status: E --> Expecting Replies, R --> Responding, W --> Waiting
+UpDn Time --> Up or Down Time for a Tunnel
+==========================================================================
+
+Interface: Tunnel100, IPv4 NHRP Details 
+Type:Hub, NHRP Peers:2, 
+
+ # Ent  Peer NBMA Addr Peer Tunnel Add State  UpDn Tm Attrb
+ ----- --------------- --------------- ----- -------- -----
+     1 20.30.30.2            10.64.0.2    UP 00:04:28     D
+     1 20.30.10.2            10.64.0.3    UP 00:00:59     D
+```
+```
+R15#show ip nhrp 
+10.64.0.2/32 via 10.64.0.2
+   Tunnel100 created 00:05:12, expire 01:54:47
+   Type: dynamic, Flags: unique registered used nhop 
+   NBMA address: 20.30.30.2 
+10.64.0.3/32 via 10.64.0.3
+   Tunnel100 created 00:01:44, expire 01:58:15
+   Type: dynamic, Flags: unique registered used nhop 
+   NBMA address: 20.30.10.2 
 ```
