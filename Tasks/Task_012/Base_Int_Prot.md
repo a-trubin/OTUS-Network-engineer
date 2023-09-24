@@ -106,7 +106,6 @@ R19(config-line)#transport input telnet
 R15(config)#int lo3
 R15(config-if)#ip address 20.10.20.7 255.255.255.255
 R15(config)#ip nat inside source static 192.168.0.19 20.10.20.7
-R15(config)#ip route 20.10.20.7 255.255.255.255 Null0
 ```
 Проверка:
 
