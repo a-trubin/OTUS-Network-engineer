@@ -83,11 +83,9 @@ Pro Inside global      Inside local       Outside local      Outside global
 --- 20.10.20.5         192.168.1.20       ---                ---
 ```
 
-Чтобы данный адрес был доступен, на R15 необходимо добавить маршрут в Null0 и анонсировать в BGP.
+Чтобы данный адрес был доступен, на R15 необходимо маршрут анонсировать в BGP.
 
 ```
-R15(config)#ip route 20.10.20.5 255.255.255.255 Null0
-
 R15(config)#router bgp 1001
 R15(config-router)#redistribute connected 
 ```
