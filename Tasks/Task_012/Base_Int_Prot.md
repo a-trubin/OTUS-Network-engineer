@@ -151,8 +151,8 @@ udp 20.30.20.2:37168   172.16.32.10:37168 20.10.40.1:37169   20.10.40.1:37169
 SW4:
 
 ```
-ip dhcp excluded-address 192.168.11.1 192.168.11.100
-ip dhcp excluded-address 192.168.12.1 192.168.12.100
+ip dhcp excluded-address 192.168.11.1 192.168.11.176
+ip dhcp excluded-address 192.168.12.1 192.168.12.176
 
 ip dhcp pool Vlan11
  network 192.168.11.0 255.255.255.0
@@ -163,10 +163,10 @@ ip dhcp pool Vlan12
  default-router 192.168.12.100 
 ```
 
-SW5 настроен аналогично.
+SW5:
 ```
-ip dhcp excluded-address 192.168.11.100 192.168.11.254
-ip dhcp excluded-address 192.168.12.100 192.168.12.254
+ip dhcp excluded-address 192.168.11.177 192.168.11.254
+ip dhcp excluded-address 192.168.12.177 192.168.12.254
 
 ip dhcp pool Vlan11
  network 192.168.11.0 255.255.255.0
