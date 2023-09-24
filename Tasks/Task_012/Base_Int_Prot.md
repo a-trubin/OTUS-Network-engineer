@@ -153,7 +153,6 @@ SW4:
 ```
 ip dhcp excluded-address 192.168.11.1 192.168.11.100
 ip dhcp excluded-address 192.168.12.1 192.168.12.100
-ip dhcp excluded-address 192.168.13.1 192.168.13.100
 
 ip dhcp pool Vlan11
  network 192.168.11.0 255.255.255.0
@@ -165,6 +164,18 @@ ip dhcp pool Vlan12
 ```
 
 SW5 настроен аналогично.
+```
+ip dhcp excluded-address 192.168.11.100 192.168.11.254
+ip dhcp excluded-address 192.168.12.100 192.168.12.254
+
+ip dhcp pool Vlan11
+ network 192.168.11.0 255.255.255.0
+ default-router 192.168.11.100 
+!
+ip dhcp pool Vlan12
+ network 192.168.12.0 255.255.255.0
+ default-router 192.168.12.100 
+```
 
 Для VLAN3 не настривается, т.к. это vlan управления.
 
