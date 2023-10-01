@@ -33,13 +33,13 @@ R18(config-if)#tunnel destination 20.10.10.2
 R15:
 
 ```
-R18(config)#interface Tunnel 0
-R18(config-if)#ip address 10.0.0.1 255.255.255.252
-R18(config-if)#ip mtu 1400
-R18(config-if)#ip tcp adjust-mss 1360
-R18(config-if)#keepalive 3 3
-R18(config-if)#tunnel source 20.10.20.2
-R18(config-if)#tunnel destination 20.20.10.2
+R15(config)#interface Tunnel 0
+R15(config-if)#ip address 10.0.0.1 255.255.255.252
+R15(config-if)#ip mtu 1400
+R15(config-if)#ip tcp adjust-mss 1360
+R15(config-if)#keepalive 3 3
+R15(config-if)#tunnel source 20.10.20.2
+R15(config-if)#tunnel destination 20.20.10.2
 ```
 R14:
 
