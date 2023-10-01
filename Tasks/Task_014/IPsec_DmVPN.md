@@ -107,6 +107,7 @@ CA Certificate
 
 GRE уже настроен:
 
+R15:
 ```
 R15(config)#interface Tunnel 0
 R15(config-if)#ip address 10.0.0.1 255.255.255.252
@@ -115,7 +116,9 @@ R15(config-if)#ip tcp adjust-mss 1360
 R15(config-if)#keepalive 3 3
 R15(config-if)#tunnel source 20.10.20.2
 R15(config-if)#tunnel destination 20.20.10.2
-
+```
+R18:
+```
 R18(config)#interface Tunnel 0
 R18(config-if)#ip address 10.0.0.2 255.255.255.252
 R18(config-if)#ip mtu 1400
@@ -232,4 +235,147 @@ interface: Ethernet0/2
      outbound ah sas:
           
      outbound pcp sas:
+```
+ ## 2. Настроить DMVPN поверх IPSec между Москва и Чокурдах, Лабытнанги.
+
+Необходимо построить туннель между R15, R27, R28
+
+DMVPN настроено впредыдущей работе.
+
+R15:
+```
+interface Tunnel100
+ no shutdown
+ ip address 10.64.0.1 255.255.255.0
+ no ip redirects
+ ip mtu 1400
+ ip nhrp map multicast dynamic
+ ip nhrp network-id 1
+ ip tcp adjust-mss 1360
+ tunnel source 20.10.20.2
+ tunnel mode gre multipoint
+```
+
+R27:
+```
+interface Tunnel100
+ no shutdown
+ ip address 10.64.0.2 255.255.255.252
+ no ip redirects
+ ip mtu 1400
+ ip nhrp map 10.64.0.1 20.10.20.2
+ ip nhrp map multicast 20.10.20.2
+ ip nhrp network-id 1
+ ip nhrp nhs 10.64.0.1
+ ip tcp adjust-mss 1360
+ tunnel source 20.30.30.2
+ tunnel mode gre multipoint
+```
+
+R28:
+
+```
+interface Tunnel100
+ no shutdown
+ ip address 10.64.0.3 255.255.255.0
+ no ip redirects
+ ip mtu 1400
+ ip nhrp map 10.64.0.1 20.10.20.2
+ ip nhrp map multicast 20.10.20.2
+ ip nhrp network-id 1
+ ip nhrp nhs 10.64.0.1
+ ip tcp adjust-mss 1360
+ tunnel source 20.30.10.2
+ tunnel mode gre multipoint
+```
+Перейдем к настройкам IPSEC:
+
+R15:
+
+```
+crypto isakmp policy 1
+ encr aes 192
+ group 2
+
+crypto ipsec transform-set DMVPN esp-aes 192 esp-sha-hmac 
+ mode transport
+
+crypto ipsec profile DMVPN
+ set transform-set DMVPN
+
+interface Tunnel100
+ tunnel protection ipsec profile DMVPN
+```
+
+R28:
+
+```
+crypto isakmp policy 1
+ encr aes 192
+ group 2
+
+crypto ipsec transform-set DMVPN esp-aes 192 esp-sha-hmac 
+ mode transport
+
+crypto ipsec profile DMVPN
+ set transform-set DMVPN
+
+interface Tunnel100
+ tunnel protection ipsec profile DMVPN
+```
+
+R27:
+
+```
+crypto isakmp policy 1
+ encr aes 192
+ group 2
+
+crypto ipsec transform-set DMVPN esp-aes 192 esp-sha-hmac 
+ mode transport
+
+crypto ipsec profile DMVPN
+ set transform-set DMVPN
+
+interface Tunnel100
+ tunnel protection ipsec profile DMVPN
+```
+ikev2 не удалось завести.
+
+Проверка:
+
+```
+R15#show crypto isakmp sa detail 
+Codes: C - IKE configuration mode, D - Dead Peer Detection
+       K - Keepalives, N - NAT-traversal
+       T - cTCP encapsulation, X - IKE Extended Authentication
+       psk - Preshared key, rsig - RSA signature
+       renc - RSA encryption
+IPv4 Crypto ISAKMP SA
+
+C-id  Local           Remote          I-VRF  Status Encr Hash   Auth DH Lifetime Cap.
+
+1074  20.10.20.2      20.30.10.2             ACTIVE aes  sha    rsig 2  23:47:17     
+       Engine-id:Conn-id =  SW:74
+
+1091  20.10.20.2      20.30.30.2             ACTIVE aes  sha    rsig 2  23:55:18     
+       Engine-id:Conn-id =  SW:91
+
+
+R15#show crypto isakmp sa detail 
+Codes: C - IKE configuration mode, D - Dead Peer Detection
+       K - Keepalives, N - NAT-traversal
+       T - cTCP encapsulation, X - IKE Extended Authentication
+       psk - Preshared key, rsig - RSA signature
+       renc - RSA encryption
+IPv4 Crypto ISAKMP SA
+
+C-id  Local           Remote          I-VRF  Status Encr Hash   Auth DH Lifetime Cap.
+
+1074  20.10.20.2      20.30.10.2             ACTIVE aes  sha    rsig 2  23:47:17     
+       Engine-id:Conn-id =  SW:74
+
+1091  20.10.20.2      20.30.30.2             ACTIVE aes  sha    rsig 2  23:55:18     
+       Engine-id:Conn-id =  SW:91
+
 ```
