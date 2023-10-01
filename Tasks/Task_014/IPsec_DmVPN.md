@@ -1,7 +1,7 @@
 # IPSec over DmVPN
 ## Цели
-1. Настройте GRE поверх IPSec между офисами Москва и С.-Петербург.  
-2. Настройте DMVPN поверх IPSec между Москва и Чокурдах, Лабытнанги.  
+1. Настроить GRE поверх IPSec между офисами Москва и С.-Петербург.  
+2. Настроить DMVPN поверх IPSec между Москва и Чокурдах, Лабытнанги.  
 Дополнительно: Для IPSec использовать CA и сертификаты.
 
 ## Топология  
@@ -103,4 +103,133 @@ CA Certificate
 ```
 Теперь необходимо выпустить сертификаты и для других роутеров (это останется за кадром).
 
+## 1. Настроить GRE поверх IPSec между офисами Москва и С.-Петербург. 
 
+GRE уже настроен:
+
+```
+R15(config)#interface Tunnel 0
+R15(config-if)#ip address 10.0.0.1 255.255.255.252
+R15(config-if)#ip mtu 1400
+R15(config-if)#ip tcp adjust-mss 1360
+R15(config-if)#keepalive 3 3
+R15(config-if)#tunnel source 20.10.20.2
+R15(config-if)#tunnel destination 20.20.10.2
+
+R18(config)#interface Tunnel 0
+R18(config-if)#ip address 10.0.0.2 255.255.255.252
+R18(config-if)#ip mtu 1400
+R18(config-if)#ip tcp adjust-mss 1360
+R18(config-if)#keepalive 3 3
+R18(config-if)#tunnel source 20.20.10.2
+R18(config-if)#tunnel destination 20.10.20.2 
+```
+Настроим R15:
+
+```
+crypto ikev2 proposal Phase1 
+ encryption aes-cbc-256
+ integrity sha1
+ group 2
+
+crypto ikev2 policy IKEv2 
+ proposal Phase1
+
+crypto ikev2 profile Profile1
+ match address local 20.10.20.2
+ match identity remote address 20.20.10.2 255.255.255.255 
+ authentication remote rsa-sig
+ authentication local rsa-sig
+ pki trustpoint VPN
+
+crypto ipsec transform-set IPSEC esp-aes esp-sha-hmac 
+ mode transport
+
+crypto map IPSEC_R18 1 ipsec-isakmp 
+ set peer 20.20.10.2
+ set transform-set IPSEC 
+ set pfs group2
+ set ikev2-profile Profile1
+ match address GRE
+
+interface Ethernet0/2
+ no shutdown
+ ip address 20.10.20.2 255.255.255.252
+ ip nat outside
+ ip virtual-reassembly in
+ crypto map IPSEC_R18
+
+ip access-list extended GRE
+ permit gre any any
+```
+R18 настраивается аналогично.
+
+Проверим:
+
+```
+R15#show crypto ikev2 session 
+ IPv4 Crypto IKEv2 Session 
+
+Session-id:1, Status:UP-ACTIVE, IKE count:1, CHILD count:1
+
+Tunnel-id Local                 Remote                fvrf/ivrf            Status 
+1         20.10.20.2/500        20.20.10.2/500        none/none            READY  
+      Encr: AES-CBC, keysize: 256, PRF: SHA1, Hash: SHA96, DH Grp:2, Auth sign: RSA, Au
+th verify: RSA
+      Life/Active Time: 86400/192 sec
+Child sa: local selector  0.0.0.0/0 - 255.255.255.255/65535
+          remote selector 0.0.0.0/0 - 255.255.255.255/65535
+          ESP spi in/out: 0x6C85693E/0x4DEB1A45  
+
+ IPv6 Crypto IKEv2 Session
+
+R15#show crypto ipsec sa
+
+interface: Ethernet0/2
+    Crypto map tag: IPSEC_R18, local addr 20.10.20.2
+
+   protected vrf: (none)
+   local  ident (addr/mask/prot/port): (0.0.0.0/0.0.0.0/47/0)
+   remote ident (addr/mask/prot/port): (0.0.0.0/0.0.0.0/47/0)
+   current_peer 20.20.10.2 port 500
+     PERMIT, flags={origin_is_acl,}
+    #pkts encaps: 240, #pkts encrypt: 240, #pkts digest: 240
+    #pkts decaps: 239, #pkts decrypt: 239, #pkts verify: 239
+    #pkts compressed: 0, #pkts decompressed: 0
+    #pkts not compressed: 0, #pkts compr. failed: 0
+    #pkts not decompressed: 0, #pkts decompress failed: 0
+    #send errors 0, #recv errors 0
+
+     local crypto endpt.: 20.10.20.2, remote crypto endpt.: 20.20.10.2
+     plaintext mtu 1438, path mtu 1500, ip mtu 1500, ip mtu idb Ethernet0/2
+     current outbound spi: 0x4DEB1A45(1307253317)
+     PFS (Y/N): N, DH group: none
+
+     inbound esp sas:
+      spi: 0x6C85693E(1820682558)
+        transform: esp-aes esp-sha-hmac ,
+        in use settings ={Tunnel, }
+        conn id: 1, flow_id: SW:1, sibling_flags 80000040, crypto map: IPSEC_R18
+        sa timing: remaining key lifetime (k/sec): (4292620/3363)
+        IV size: 16 bytes
+        replay detection support: Y
+        Status: ACTIVE(ACTIVE)
+          
+     inbound ah sas:
+          
+     inbound pcp sas:
+          
+     outbound esp sas:
+      spi: 0x4DEB1A45(1307253317)
+        transform: esp-aes esp-sha-hmac ,
+        in use settings ={Tunnel, }
+        conn id: 2, flow_id: SW:2, sibling_flags 80000040, crypto map: IPSEC_R18
+        sa timing: remaining key lifetime (k/sec): (4292622/3363)
+        IV size: 16 bytes
+        replay detection support: Y
+        Status: ACTIVE(ACTIVE)
+          
+     outbound ah sas:
+          
+     outbound pcp sas:
+```
