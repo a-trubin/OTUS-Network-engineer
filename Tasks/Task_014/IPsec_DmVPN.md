@@ -340,8 +340,6 @@ crypto ipsec profile DMVPN
 interface Tunnel100
  tunnel protection ipsec profile DMVPN
 ```
-ikev2 не удалось завести.
-
 Проверка:
 
 ```
